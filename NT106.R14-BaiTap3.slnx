@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="NT106.R14-BaiTap3.csproj" />
+  <Project Path="Server/Server.csproj" />
+  <Project Path="Shared/Shared.csproj" />
 </Solution>
