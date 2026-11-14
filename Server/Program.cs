@@ -25,6 +25,24 @@ internal static class Program
             nguonHuy.Cancel();
         };
 
+        try
+        {
+            await XuLyNguoiDung.KhoiTaoAsync();
+            GhiLog("Đã kiểm tra cơ sở dữ liệu.");
+        }
+        catch (SqlException ex)
+        {
+            GhiLog($"[CSDL] Không khởi tạo được: {ex.Message}");
+        }
+        catch (InvalidOperationException ex)
+        {
+            GhiLog($"[CSDL] Cấu hình kết nối không hợp lệ: {ex.Message}");
+        }
+        catch (ArgumentException ex)
+        {
+            GhiLog($"[CSDL] Chuỗi kết nối không hợp lệ: {ex.Message}");
+        }
+
         var listener = new TcpListener(IPAddress.Any, GiaoThuc.CongMacDinh);
 
         try
