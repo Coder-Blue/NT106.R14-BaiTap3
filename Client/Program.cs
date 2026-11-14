@@ -8,6 +8,6 @@ internal static class Program
     private static void Main()
     {
         ApplicationConfiguration.Initialize();
-        Application.Run(new DangNhap());
+        Application.Run(new MenuChinh());
     }
 }
