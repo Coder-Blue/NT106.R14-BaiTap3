@@ -30,6 +30,10 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 |---|---|
 | `NT106.R14-BaiTap3.slnx` | Solution gồm Client, Server, Shared |
 | `Client/` | App WinForms: menu, đăng nhập, đăng ký, trang chính, kết nối TCP |
+| `Client/Forms/DangNhap/` | Form đăng nhập và file designer |
+| `Client/Forms/DangKy/` | Form đăng ký và file designer |
+| `Client/Forms/FormChinh/` | Trang chính và file designer |
+| `Client/Forms/MenuChinh/` | Menu chọn mở Client hoặc Server |
 | `Server/` | Server console, xử lý SQL, băm mật khẩu, phiên đăng nhập |
 | `Server/database.sql` | Script tạo database và bảng `NguoiDung` cho SSMS |
 | `Server/appsettings.json` | Chuỗi kết nối SQL Server |
