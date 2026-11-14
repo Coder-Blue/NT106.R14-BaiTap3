@@ -6,11 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <DefaultItemExcludes>$(DefaultItemExcludes);Shared\**;Server\**</DefaultItemExcludes>
+    <AssemblyName>NT106.R14-BaiTap3.Client</AssemblyName>
+    <RootNamespace>NT106.R14.BaiTap3.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

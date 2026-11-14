@@ -1,4 +1,6 @@
-namespace CRUD_APP;
+using NT106.R14.BaiTap3.Client.Forms;
+
+namespace NT106.R14.BaiTap3.Client;
 
 internal static class Program
 {

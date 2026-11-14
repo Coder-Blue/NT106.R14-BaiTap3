@@ -1,4 +1,4 @@
-namespace CRUD_APP
+namespace NT106.R14.BaiTap3.Client.Forms
 {
     partial class FormChinh
     {
@@ -18,6 +18,7 @@ namespace CRUD_APP
         private void InitializeComponent()
         {
             lblTieuDe = new Label();
+            lblPhuDe = new Label();
             lblChaoMung = new Label();
             grpThongTin = new GroupBox();
             lblTenDangNhapLabel = new Label();
@@ -30,33 +31,48 @@ namespace CRUD_APP
             lblNgayTao = new Label();
             lblLanDangNhapCuoiLabel = new Label();
             lblLanDangNhapCuoi = new Label();
+            lblTrangThai = new Label();
             btnDangXuat = new Button();
             grpThongTin.SuspendLayout();
             SuspendLayout();
-            // 
-            // lblTieuDe
-            // 
-            lblTieuDe.AutoSize = false;
-            lblTieuDe.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            //
+            //lblTieuDe
+            //
+            lblTieuDe.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            lblTieuDe.ForeColor = Color.FromArgb(35, 78, 120);
             lblTieuDe.Location = new Point(0, 24);
             lblTieuDe.Name = "lblTieuDe";
-            lblTieuDe.Size = new Size(520, 32);
+            lblTieuDe.Size = new Size(640, 44);
             lblTieuDe.TabIndex = 0;
             lblTieuDe.Text = "TRANG CHÍNH";
             lblTieuDe.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // lblChaoMung
-            // 
-            lblChaoMung.AutoSize = false;
-            lblChaoMung.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblChaoMung.Location = new Point(48, 72);
+            //
+            //lblPhuDe
+            //
+            lblPhuDe.Font = new Font("Segoe UI", 10.5F);
+            lblPhuDe.ForeColor = Color.FromArgb(100, 100, 100);
+            lblPhuDe.Location = new Point(0, 72);
+            lblPhuDe.Name = "lblPhuDe";
+            lblPhuDe.Size = new Size(640, 24);
+            lblPhuDe.TabIndex = 1;
+            lblPhuDe.Text = "Thông tin người dùng nhận từ server";
+            lblPhuDe.TextAlign = ContentAlignment.MiddleCenter;
+            //
+            //lblChaoMung
+            //
+            lblChaoMung.AutoEllipsis = true;
+            lblChaoMung.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblChaoMung.ForeColor = Color.FromArgb(35, 78, 120);
+            lblChaoMung.Location = new Point(48, 106);
             lblChaoMung.Name = "lblChaoMung";
-            lblChaoMung.Size = new Size(424, 26);
-            lblChaoMung.TabIndex = 1;
+            lblChaoMung.Size = new Size(544, 28);
+            lblChaoMung.TabIndex = 2;
             lblChaoMung.Text = "Xin chào!";
-            // 
-            // grpThongTin
-            // 
+            lblChaoMung.TextAlign = ContentAlignment.MiddleLeft;
+            lblChaoMung.UseMnemonic = false;
+            //
+            //grpThongTin
+            //
             grpThongTin.Controls.Add(lblTenDangNhapLabel);
             grpThongTin.Controls.Add(lblTenDangNhap);
             grpThongTin.Controls.Add(lblHoTenLabel);
@@ -69,133 +85,161 @@ namespace CRUD_APP
             grpThongTin.Controls.Add(lblLanDangNhapCuoi);
             grpThongTin.Font = new Font("Segoe UI", 10F);
             grpThongTin.ForeColor = Color.FromArgb(50, 50, 50);
-            grpThongTin.Location = new Point(48, 110);
+            grpThongTin.Location = new Point(48, 146);
             grpThongTin.Name = "grpThongTin";
-            grpThongTin.Size = new Size(424, 224);
-            grpThongTin.TabIndex = 2;
+            grpThongTin.Size = new Size(544, 224);
+            grpThongTin.TabIndex = 3;
             grpThongTin.TabStop = false;
             grpThongTin.Text = "Thông tin tài khoản";
-            // 
-            // lblTenDangNhapLabel
-            // 
+            //
+            //lblTenDangNhapLabel
+            //
             lblTenDangNhapLabel.AutoSize = true;
             lblTenDangNhapLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblTenDangNhapLabel.Location = new Point(20, 40);
+            lblTenDangNhapLabel.Location = new Point(24, 36);
             lblTenDangNhapLabel.Name = "lblTenDangNhapLabel";
             lblTenDangNhapLabel.TabIndex = 0;
             lblTenDangNhapLabel.Text = "Tên đăng nhập:";
-            // 
-            // lblTenDangNhap
-            // 
-            lblTenDangNhap.AutoSize = true;
+            //
+            //lblTenDangNhap
+            //
+            lblTenDangNhap.AutoEllipsis = true;
+            lblTenDangNhap.AutoSize = false;
             lblTenDangNhap.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblTenDangNhap.Location = new Point(200, 40);
+            lblTenDangNhap.Location = new Point(200, 36);
             lblTenDangNhap.Name = "lblTenDangNhap";
+            lblTenDangNhap.Size = new Size(320, 23);
             lblTenDangNhap.TabIndex = 1;
-            // 
-            // lblHoTenLabel
-            // 
+            lblTenDangNhap.UseMnemonic = false;
+            //
+            //lblHoTenLabel
+            //
             lblHoTenLabel.AutoSize = true;
             lblHoTenLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblHoTenLabel.Location = new Point(20, 74);
+            lblHoTenLabel.Location = new Point(24, 72);
             lblHoTenLabel.Name = "lblHoTenLabel";
             lblHoTenLabel.TabIndex = 2;
             lblHoTenLabel.Text = "Họ tên:";
-            // 
-            // lblHoTen
-            // 
-            lblHoTen.AutoSize = true;
+            //
+            //lblHoTen
+            //
+            lblHoTen.AutoEllipsis = true;
+            lblHoTen.AutoSize = false;
             lblHoTen.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblHoTen.Location = new Point(200, 74);
+            lblHoTen.Location = new Point(200, 72);
             lblHoTen.Name = "lblHoTen";
+            lblHoTen.Size = new Size(320, 23);
             lblHoTen.TabIndex = 3;
-            // 
-            // lblEmailLabel
-            // 
+            lblHoTen.UseMnemonic = false;
+            //
+            //lblEmailLabel
+            //
             lblEmailLabel.AutoSize = true;
             lblEmailLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblEmailLabel.Location = new Point(20, 108);
+            lblEmailLabel.Location = new Point(24, 108);
             lblEmailLabel.Name = "lblEmailLabel";
             lblEmailLabel.TabIndex = 4;
             lblEmailLabel.Text = "Email:";
-            // 
-            // lblEmail
-            // 
-            lblEmail.AutoSize = true;
+            //
+            //lblEmail
+            //
+            lblEmail.AutoEllipsis = true;
+            lblEmail.AutoSize = false;
             lblEmail.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblEmail.Location = new Point(200, 108);
             lblEmail.Name = "lblEmail";
+            lblEmail.Size = new Size(320, 23);
             lblEmail.TabIndex = 5;
-            // 
-            // lblNgayTaoLabel
-            // 
+            lblEmail.UseMnemonic = false;
+            //
+            //lblNgayTaoLabel
+            //
             lblNgayTaoLabel.AutoSize = true;
             lblNgayTaoLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblNgayTaoLabel.Location = new Point(20, 142);
+            lblNgayTaoLabel.Location = new Point(24, 144);
             lblNgayTaoLabel.Name = "lblNgayTaoLabel";
             lblNgayTaoLabel.TabIndex = 6;
             lblNgayTaoLabel.Text = "Ngày tạo:";
-            // 
-            // lblNgayTao
-            // 
-            lblNgayTao.AutoSize = true;
+            //
+            //lblNgayTao
+            //
+            lblNgayTao.AutoEllipsis = true;
+            lblNgayTao.AutoSize = false;
             lblNgayTao.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblNgayTao.Location = new Point(200, 142);
+            lblNgayTao.Location = new Point(200, 144);
             lblNgayTao.Name = "lblNgayTao";
+            lblNgayTao.Size = new Size(320, 23);
             lblNgayTao.TabIndex = 7;
-            // 
-            // lblLanDangNhapCuoiLabel
-            // 
+            lblNgayTao.UseMnemonic = false;
+            //
+            //lblLanDangNhapCuoiLabel
+            //
             lblLanDangNhapCuoiLabel.AutoSize = true;
             lblLanDangNhapCuoiLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblLanDangNhapCuoiLabel.Location = new Point(20, 176);
+            lblLanDangNhapCuoiLabel.Location = new Point(24, 180);
             lblLanDangNhapCuoiLabel.Name = "lblLanDangNhapCuoiLabel";
             lblLanDangNhapCuoiLabel.TabIndex = 8;
-            lblLanDangNhapCuoiLabel.Text = "Lần đăng nhập trước:";
-            // 
-            // lblLanDangNhapCuoi
-            // 
-            lblLanDangNhapCuoi.AutoSize = true;
+            lblLanDangNhapCuoiLabel.Text = "Đăng nhập gần nhất:";
+            //
+            //lblLanDangNhapCuoi
+            //
+            lblLanDangNhapCuoi.AutoEllipsis = true;
+            lblLanDangNhapCuoi.AutoSize = false;
             lblLanDangNhapCuoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblLanDangNhapCuoi.Location = new Point(200, 176);
+            lblLanDangNhapCuoi.Location = new Point(200, 180);
             lblLanDangNhapCuoi.Name = "lblLanDangNhapCuoi";
+            lblLanDangNhapCuoi.Size = new Size(320, 23);
             lblLanDangNhapCuoi.TabIndex = 9;
-            // 
-            // btnDangXuat
-            // 
-            btnDangXuat.BackColor = Color.FromArgb(51, 122, 183);
+            lblLanDangNhapCuoi.UseMnemonic = false;
+            //
+            //lblTrangThai
+            //
+            lblTrangThai.AutoEllipsis = true;
+            lblTrangThai.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            lblTrangThai.ForeColor = Color.FromArgb(100, 100, 100);
+            lblTrangThai.Location = new Point(48, 382);
+            lblTrangThai.Name = "lblTrangThai";
+            lblTrangThai.Size = new Size(544, 22);
+            lblTrangThai.TabIndex = 4;
+            lblTrangThai.Text = "Trạng thái: Đã kết nối";
+            //
+            //btnDangXuat
+            //
+            btnDangXuat.BackColor = Color.FromArgb(200, 70, 70);
             btnDangXuat.Cursor = Cursors.Hand;
             btnDangXuat.FlatAppearance.BorderSize = 0;
-            btnDangXuat.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
-            btnDangXuat.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
+            btnDangXuat.FlatAppearance.MouseDownBackColor = Color.FromArgb(170, 50, 50);
+            btnDangXuat.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 90, 90);
             btnDangXuat.FlatStyle = FlatStyle.Flat;
             btnDangXuat.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnDangXuat.ForeColor = Color.White;
-            btnDangXuat.Location = new Point(180, 356);
+            btnDangXuat.Location = new Point(220, 414);
             btnDangXuat.Name = "btnDangXuat";
-            btnDangXuat.Size = new Size(160, 40);
-            btnDangXuat.TabIndex = 3;
+            btnDangXuat.Size = new Size(200, 46);
+            btnDangXuat.TabIndex = 5;
             btnDangXuat.Text = "Đăng xuất";
             btnDangXuat.UseVisualStyleBackColor = false;
             btnDangXuat.Click += btnDangXuat_Click;
-            // 
-            // FormChinh
-            // 
-            AcceptButton = btnDangXuat;
+            //
+            //FormChinh
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(520, 420);
+            ClientSize = new Size(640, 490);
             Controls.Add(lblTieuDe);
+            Controls.Add(lblPhuDe);
             Controls.Add(lblChaoMung);
             Controls.Add(grpThongTin);
+            Controls.Add(lblTrangThai);
             Controls.Add(btnDangXuat);
+            Font = new Font("Segoe UI", 9F);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FormChinh";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Trang chính";
+            Text = "Trang chính - Bài tập 3";
             grpThongTin.ResumeLayout(false);
             grpThongTin.PerformLayout();
             ResumeLayout(false);
@@ -205,6 +249,7 @@ namespace CRUD_APP
         #endregion
 
         private Label lblTieuDe;
+        private Label lblPhuDe;
         private Label lblChaoMung;
         private GroupBox grpThongTin;
         private Label lblTenDangNhapLabel;
@@ -217,6 +262,7 @@ namespace CRUD_APP
         private Label lblNgayTao;
         private Label lblLanDangNhapCuoiLabel;
         private Label lblLanDangNhapCuoi;
+        private Label lblTrangThai;
         private Button btnDangXuat;
     }
 }

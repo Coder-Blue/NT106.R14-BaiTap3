@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>NT106.R14-BaiTap3.Shared</AssemblyName>
+    <RootNamespace>NT106.R14.BaiTap3.Shared</RootNamespace>
   </PropertyGroup>
 
 </Project>

@@ -1,5 +1,4 @@
--- CSDL cho ung dung Quan ly nguoi dung (BaiTap2.2)
--- Chay script nay trong SQL Server Management Studio.
+-- Chạy script này một lần trên SQL Server/LocalDB trước khi chạy server.
 
 IF DB_ID(N'QuanLyNguoiDung') IS NULL
     CREATE DATABASE QuanLyNguoiDung;
@@ -15,7 +14,7 @@ CREATE TABLE dbo.Users (
     MatKhauBam      NVARCHAR(64)  NOT NULL,
     Salt            NVARCHAR(32)  NOT NULL,
     HoTen           NVARCHAR(50)  NOT NULL,
-    Email           NVARCHAR(100) NULL,
+    Email           NVARCHAR(100) NOT NULL,
     NgayTao         DATETIME2     NOT NULL DEFAULT SYSDATETIME(),
     LanDangNhapCuoi DATETIME2     NULL
 );
