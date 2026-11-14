@@ -7,15 +7,14 @@ GO
 USE QuanLyNguoiDung;
 GO
 
-IF OBJECT_ID(N'dbo.Users', N'U') IS NULL
-CREATE TABLE dbo.Users (
-    UserId          INT IDENTITY(1,1) PRIMARY KEY,
-    TenDangNhap     NVARCHAR(20)  NOT NULL UNIQUE,
-    MatKhauBam      NVARCHAR(64)  NOT NULL,
-    Salt            NVARCHAR(32)  NOT NULL,
-    HoTen           NVARCHAR(50)  NOT NULL,
-    Email           NVARCHAR(100) NOT NULL,
-    NgayTao         DATETIME2     NOT NULL DEFAULT SYSDATETIME(),
-    LanDangNhapCuoi DATETIME2     NULL
+IF OBJECT_ID(N'dbo.NguoiDung', N'U') IS NULL
+CREATE TABLE dbo.NguoiDung (
+    UserId       INT IDENTITY(1,1) PRIMARY KEY,
+    Username     NVARCHAR(20)  NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(64)  NOT NULL,
+    PasswordSalt NVARCHAR(32)  NOT NULL,
+    Email        NVARCHAR(100) NOT NULL,
+    FullName     NVARCHAR(50)  NOT NULL,
+    Birthday     DATE          NOT NULL
 );
 GO

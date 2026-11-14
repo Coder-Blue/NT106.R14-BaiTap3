@@ -27,10 +27,10 @@ namespace NT106.R14.BaiTap3.Client.Forms
             lblHoTen = new Label();
             lblEmailLabel = new Label();
             lblEmail = new Label();
-            lblNgayTaoLabel = new Label();
-            lblNgayTao = new Label();
-            lblLanDangNhapCuoiLabel = new Label();
-            lblLanDangNhapCuoi = new Label();
+            lblNgaySinhLabel = new Label();
+            lblNgaySinh = new Label();
+            lblUserIdLabel = new Label();
+            lblUserId = new Label();
             lblTrangThai = new Label();
             btnDangXuat = new Button();
             grpThongTin.SuspendLayout();
@@ -79,10 +79,10 @@ namespace NT106.R14.BaiTap3.Client.Forms
             grpThongTin.Controls.Add(lblHoTen);
             grpThongTin.Controls.Add(lblEmailLabel);
             grpThongTin.Controls.Add(lblEmail);
-            grpThongTin.Controls.Add(lblNgayTaoLabel);
-            grpThongTin.Controls.Add(lblNgayTao);
-            grpThongTin.Controls.Add(lblLanDangNhapCuoiLabel);
-            grpThongTin.Controls.Add(lblLanDangNhapCuoi);
+            grpThongTin.Controls.Add(lblNgaySinhLabel);
+            grpThongTin.Controls.Add(lblNgaySinh);
+            grpThongTin.Controls.Add(lblUserIdLabel);
+            grpThongTin.Controls.Add(lblUserId);
             grpThongTin.Font = new Font("Segoe UI", 10F);
             grpThongTin.ForeColor = Color.FromArgb(50, 50, 50);
             grpThongTin.Location = new Point(48, 146);
@@ -152,45 +152,45 @@ namespace NT106.R14.BaiTap3.Client.Forms
             lblEmail.TabIndex = 5;
             lblEmail.UseMnemonic = false;
             //
-            //lblNgayTaoLabel
+            //lblNgaySinhLabel
             //
-            lblNgayTaoLabel.AutoSize = true;
-            lblNgayTaoLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblNgayTaoLabel.Location = new Point(24, 144);
-            lblNgayTaoLabel.Name = "lblNgayTaoLabel";
-            lblNgayTaoLabel.TabIndex = 6;
-            lblNgayTaoLabel.Text = "Ngày tạo:";
+            lblNgaySinhLabel.AutoSize = true;
+            lblNgaySinhLabel.ForeColor = Color.FromArgb(110, 110, 110);
+            lblNgaySinhLabel.Location = new Point(24, 144);
+            lblNgaySinhLabel.Name = "lblNgaySinhLabel";
+            lblNgaySinhLabel.TabIndex = 6;
+            lblNgaySinhLabel.Text = "Ngày sinh:";
             //
-            //lblNgayTao
+            //lblNgaySinh
             //
-            lblNgayTao.AutoEllipsis = true;
-            lblNgayTao.AutoSize = false;
-            lblNgayTao.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblNgayTao.Location = new Point(200, 144);
-            lblNgayTao.Name = "lblNgayTao";
-            lblNgayTao.Size = new Size(320, 23);
-            lblNgayTao.TabIndex = 7;
-            lblNgayTao.UseMnemonic = false;
+            lblNgaySinh.AutoEllipsis = true;
+            lblNgaySinh.AutoSize = false;
+            lblNgaySinh.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblNgaySinh.Location = new Point(200, 144);
+            lblNgaySinh.Name = "lblNgaySinh";
+            lblNgaySinh.Size = new Size(320, 23);
+            lblNgaySinh.TabIndex = 7;
+            lblNgaySinh.UseMnemonic = false;
             //
-            //lblLanDangNhapCuoiLabel
+            //lblUserIdLabel
             //
-            lblLanDangNhapCuoiLabel.AutoSize = true;
-            lblLanDangNhapCuoiLabel.ForeColor = Color.FromArgb(110, 110, 110);
-            lblLanDangNhapCuoiLabel.Location = new Point(24, 180);
-            lblLanDangNhapCuoiLabel.Name = "lblLanDangNhapCuoiLabel";
-            lblLanDangNhapCuoiLabel.TabIndex = 8;
-            lblLanDangNhapCuoiLabel.Text = "Đăng nhập gần nhất:";
+            lblUserIdLabel.AutoSize = true;
+            lblUserIdLabel.ForeColor = Color.FromArgb(110, 110, 110);
+            lblUserIdLabel.Location = new Point(24, 180);
+            lblUserIdLabel.Name = "lblUserIdLabel";
+            lblUserIdLabel.TabIndex = 8;
+            lblUserIdLabel.Text = "Mã người dùng:";
             //
-            //lblLanDangNhapCuoi
+            //lblUserId
             //
-            lblLanDangNhapCuoi.AutoEllipsis = true;
-            lblLanDangNhapCuoi.AutoSize = false;
-            lblLanDangNhapCuoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblLanDangNhapCuoi.Location = new Point(200, 180);
-            lblLanDangNhapCuoi.Name = "lblLanDangNhapCuoi";
-            lblLanDangNhapCuoi.Size = new Size(320, 23);
-            lblLanDangNhapCuoi.TabIndex = 9;
-            lblLanDangNhapCuoi.UseMnemonic = false;
+            lblUserId.AutoEllipsis = true;
+            lblUserId.AutoSize = false;
+            lblUserId.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblUserId.Location = new Point(200, 180);
+            lblUserId.Name = "lblUserId";
+            lblUserId.Size = new Size(320, 23);
+            lblUserId.TabIndex = 9;
+            lblUserId.UseMnemonic = false;
             //
             //lblTrangThai
             //
@@ -258,10 +258,10 @@ namespace NT106.R14.BaiTap3.Client.Forms
         private Label lblHoTen;
         private Label lblEmailLabel;
         private Label lblEmail;
-        private Label lblNgayTaoLabel;
-        private Label lblNgayTao;
-        private Label lblLanDangNhapCuoiLabel;
-        private Label lblLanDangNhapCuoi;
+        private Label lblNgaySinhLabel;
+        private Label lblNgaySinh;
+        private Label lblUserIdLabel;
+        private Label lblUserId;
         private Label lblTrangThai;
         private Button btnDangXuat;
     }

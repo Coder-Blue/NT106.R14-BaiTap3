@@ -177,7 +177,8 @@ internal static class Program
         string? loi = KiemTraNhapLieu.TenDangNhap(tenDangNhap)
             ?? KiemTraNhapLieu.MatKhau(yeuCau.MatKhau)
             ?? KiemTraNhapLieu.HoTen(hoTen)
-            ?? KiemTraNhapLieu.Email(email);
+            ?? KiemTraNhapLieu.Email(email)
+            ?? KiemTraNhapLieu.NgaySinh(yeuCau.Birthday);
 
         if (loi is not null)
         {
@@ -192,7 +193,7 @@ internal static class Program
 
         try
         {
-            await XuLyNguoiDung.DangKy(tenDangNhap, yeuCau.MatKhau, hoTen, email);
+            await XuLyNguoiDung.DangKy(tenDangNhap, yeuCau.MatKhau, hoTen, email, yeuCau.Birthday!.Value.Date);
         }
         catch (SqlException ex) when (ex.Number is 2627 or 2601)
         {
@@ -221,10 +222,10 @@ internal static class Program
         }
 
         string token = MatKhau.TaoToken();
-        var phien = new PhienDangNhap(nguoiDung.TenDangNhap, token, DateTime.UtcNow.Add(ThoiHanPhien));
+        var phien = new PhienDangNhap(nguoiDung.Username, token, DateTime.UtcNow.Add(ThoiHanPhien));
         DanhSachPhien[maPhien] = phien;
 
-        GhiLog($"[ĐĂNG NHẬP] Thành công: {maPhien} -> {nguoiDung.TenDangNhap}");
+        GhiLog($"[ĐĂNG NHẬP] Thành công: {maPhien} -> {nguoiDung.Username}");
         return new PhanHoi(true, GiaoThuc.ThanhCong, "Đăng nhập thành công.", nguoiDung, token, phien.HetHan);
     }
 

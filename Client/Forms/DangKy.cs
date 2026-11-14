@@ -15,6 +15,8 @@ public partial class DangKy : Form
         InitializeComponent();
         ipServer = GiaoThuc.DiaChiMacDinh;
         congServer = GiaoThuc.CongMacDinh;
+        dtpNgaySinh.MaxDate = DateTime.Today;
+        dtpNgaySinh.Value = new DateTime(2000, 1, 1);
     }
 
     public DangKy(string ipServer, int congServer) : this()
@@ -34,6 +36,7 @@ public partial class DangKy : Form
         string matKhau = txtMatKhau.Text;
         string hoTen = txtHoTen.Text.Trim();
         string email = txtEmail.Text.Trim();
+        DateTime ngaySinh = dtpNgaySinh.Value.Date;
 
         BatGiaoDien(false);
         var ketNoi = new KetNoiTcp();
@@ -42,7 +45,7 @@ public partial class DangKy : Form
         {
             await ketNoi.KetNoiAsync(ipServer, congServer);
             PhanHoi phanHoi = await ketNoi.GuiYeuCauAsync(
-                new YeuCau(GiaoThuc.LenhDangKy, tenDangNhap, matKhau, hoTen, email));
+                new YeuCau(GiaoThuc.LenhDangKy, tenDangNhap, matKhau, hoTen, email, ngaySinh));
 
             if (!phanHoi.ThanhCong)
             {
@@ -94,18 +97,21 @@ public partial class DangKy : Form
         string xacNhan = txtXacNhanMatKhau.Text;
         string hoTen = txtHoTen.Text.Trim();
         string email = txtEmail.Text.Trim();
+        DateTime ngaySinh = dtpNgaySinh.Value.Date;
 
         string? loiTenDangNhap = KiemTraNhapLieu.TenDangNhap(tenDangNhap);
         string? loiMatKhau = KiemTraNhapLieu.MatKhau(matKhau);
         string? loiXacNhan = KiemTraNhapLieu.XacNhanMatKhau(matKhau, xacNhan);
         string? loiHoTen = KiemTraNhapLieu.HoTen(hoTen);
         string? loiEmail = KiemTraNhapLieu.Email(email);
+        string? loiNgaySinh = KiemTraNhapLieu.NgaySinh(ngaySinh);
 
         lblLoiTenDangNhap.Text = loiTenDangNhap ?? "";
         lblLoiMatKhau.Text = loiMatKhau ?? "";
         lblLoiXacNhanMatKhau.Text = loiXacNhan ?? "";
         lblLoiHoTen.Text = loiHoTen ?? "";
         lblLoiEmail.Text = loiEmail ?? "";
+        lblLoiNgaySinh.Text = loiNgaySinh ?? "";
 
         if (loiTenDangNhap is not null)
         {
@@ -137,6 +143,12 @@ public partial class DangKy : Form
             return false;
         }
 
+        if (loiNgaySinh is not null)
+        {
+            dtpNgaySinh.Focus();
+            return false;
+        }
+
         return true;
     }
 
@@ -150,6 +162,7 @@ public partial class DangKy : Form
         txtXacNhanMatKhau.Enabled = bat;
         txtHoTen.Enabled = bat;
         txtEmail.Enabled = bat;
+        dtpNgaySinh.Enabled = bat;
     }
 
     private void btnHuy_Click(object? sender, EventArgs e) => Close();

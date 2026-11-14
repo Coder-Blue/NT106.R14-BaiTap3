@@ -31,12 +31,12 @@ Quy ước:
 
 | Lệnh | Tham số gửi lên | Phản hồi thành công |
 |---|---|---|
-| `DANGKY` | `TenDangNhap`, `MatKhau`, `HoTen`, `Email` | `OK`, `ThongBao` |
+| `DANGKY` | `TenDangNhap`, `MatKhau`, `HoTen`, `Email`, `Birthday` | `OK`, `ThongBao` |
 | `DANGNHAP` | `TenDangNhap`, `MatKhau` | `OK`, `DuLieuNguoiDung`, `Token`, `HetHanToken` |
 | `LAYTHONGTIN` | `Token` | `OK`, `DuLieuNguoiDung` |
 | `DANGXUAT` | `Token` | `OK`; server gỡ phiên và đóng kết nối |
 
-`DuLieuNguoiDung` gồm `TenDangNhap`, `HoTen`, `Email`, `NgayTao`, `LanDangNhapCuoi`. Không bao giờ trả về mật khẩu, chuỗi băm hoặc salt.
+`DuLieuNguoiDung` gồm `UserId`, `Username`, `FullName`, `Email`, `Birthday`. Không bao giờ trả về mật khẩu, chuỗi băm hoặc salt. `Birthday` dùng định dạng ISO 8601 (`yyyy-MM-dd`).
 
 ## 4. Bảng mã lỗi
 
@@ -51,7 +51,7 @@ Quy ước:
 
 ## 5. Phiên đăng nhập và token
 
-1. `DANGNHAP` thành công: server sinh token bằng `RandomNumberGenerator`, lưu `(token, TenDangNhap, HetHan)` theo kết nối hiện tại và trả token cho client.
+1. `DANGNHAP` thành công: server sinh token bằng `RandomNumberGenerator`, lưu `(token, Username, HetHan)` theo kết nối hiện tại và trả token cho client.
 2. `LAYTHONGTIN` và `DANGXUAT` phải gửi kèm token. Server kiểm tra token thuộc đúng kết nối và còn hạn.
 3. Token hết hạn hoặc không khớp: trả `ERR_TOKEN`; client quay về form đăng nhập.
 4. `DANGXUAT` hoặc đóng cửa sổ: server gỡ phiên khỏi `ConcurrentDictionary` và ghi log.
@@ -74,5 +74,5 @@ Quy ước:
 Phản hồi:
 
 ```json
-{"ThanhCong":true,"MaLoi":"OK","ThongBao":"Đăng nhập thành công.","DuLieuNguoiDung":{"TenDangNhap":"an","HoTen":"Nguyễn Văn An","Email":"an@example.com","NgayTao":"2026-11-14T08:00:00","LanDangNhapCuoi":null},"Token":"A1B2...","HetHanToken":"2026-11-14T08:30:00Z"}
+{"ThanhCong":true,"MaLoi":"OK","ThongBao":"Đăng nhập thành công.","DuLieuNguoiDung":{"UserId":1,"Username":"an","FullName":"Nguyễn Văn An","Email":"an@example.com","Birthday":"2000-01-01T00:00:00"},"Token":"A1B2...","HetHanToken":"2026-11-14T08:30:00Z"}
 ```

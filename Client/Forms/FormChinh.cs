@@ -26,12 +26,12 @@ public partial class FormChinh : Form
 
     private void HienThiNguoiDung(NguoiDung nguoiDung)
     {
-        lblChaoMung.Text = $"Xin chào, {nguoiDung.HoTen}!";
-        lblTenDangNhap.Text = nguoiDung.TenDangNhap;
-        lblHoTen.Text = nguoiDung.HoTen;
+        lblChaoMung.Text = $"Xin chào, {nguoiDung.FullName}!";
+        lblTenDangNhap.Text = nguoiDung.Username;
+        lblHoTen.Text = nguoiDung.FullName;
         lblEmail.Text = HienThi(nguoiDung.Email);
-        lblNgayTao.Text = nguoiDung.NgayTao.ToString("dd/MM/yyyy HH:mm");
-        lblLanDangNhapCuoi.Text = nguoiDung.LanDangNhapCuoi?.ToString("dd/MM/yyyy HH:mm") ?? "Đăng nhập lần đầu";
+        lblNgaySinh.Text = nguoiDung.Birthday.ToString("dd/MM/yyyy");
+        lblUserId.Text = nguoiDung.UserId.ToString();
     }
 
     private static string HienThi(string? giaTri) =>

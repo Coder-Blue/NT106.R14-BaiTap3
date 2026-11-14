@@ -32,6 +32,7 @@ public record YeuCau(
     string MatKhau = "",
     string HoTen = "",
     string Email = "",
+    DateTime? Birthday = null,
     string Token = "");
 
 public record PhanHoi(

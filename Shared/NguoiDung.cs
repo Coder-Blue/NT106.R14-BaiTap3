@@ -1,8 +1,8 @@
 namespace NT106.R14.BaiTap3.Shared;
 
 public record NguoiDung(
-    string TenDangNhap,
-    string HoTen,
+    int UserId,
+    string Username,
+    string FullName,
     string Email,
-    DateTime NgayTao,
-    DateTime? LanDangNhapCuoi);
+    DateTime Birthday);

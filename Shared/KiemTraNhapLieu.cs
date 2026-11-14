@@ -80,4 +80,24 @@ public static class KiemTraNhapLieu
 
         return DinhDangEmail.IsMatch(email) ? null : "Địa chỉ email không đúng định dạng.";
     }
+
+    public static string? NgaySinh(DateTime? ngaySinh)
+    {
+        if (ngaySinh is null)
+        {
+            return "Không được để trống.";
+        }
+
+        if (ngaySinh.Value.Date > DateTime.Today)
+        {
+            return "Ngày sinh không được ở tương lai.";
+        }
+
+        if (ngaySinh.Value.Year < 1900)
+        {
+            return "Ngày sinh không hợp lệ.";
+        }
+
+        return null;
+    }
 }

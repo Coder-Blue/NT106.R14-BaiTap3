@@ -5,7 +5,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 
 ## Chức năng
 
-- Đăng ký tài khoản: kiểm tra dữ liệu ở client và server, kiểm tra trùng tên, băm mật khẩu bằng PBKDF2.
+- Đăng ký tài khoản: kiểm tra dữ liệu ở client và server (gồm cả ngày sinh), kiểm tra trùng tên, băm mật khẩu bằng PBKDF2.
 - Đăng nhập: xác thực bằng hash + salt, trả thông tin người dùng (không có mật khẩu), cấp token 30 phút.
 - Trang chính: hiển thị thông tin tài khoản, đăng xuất, đóng cửa sổ bằng nút X cũng gỡ phiên.
 - Server: `TcpListener` tại `IPAddress.Any:8888`, mỗi client một tác vụ, `ConcurrentDictionary` cho danh sách phiên, dừng bằng `Ctrl+C`.
@@ -18,7 +18,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `Client/` | Ứng dụng WinForms: đăng nhập, đăng ký, trang chính, lớp kết nối TCP |
 | `Client/Forms/` | Ba form và file designer |
 | `Server/` | Server console, xử lý SQL, băm mật khẩu, phiên đăng nhập |
-| `Server/database.sql` | Script tạo database và bảng `Users` |
+| `Server/database.sql` | Script tạo database và bảng `NguoiDung` |
 | `Shared/` | Giao thức, record dùng chung, kiểm tra dữ liệu nhập |
 | `docs/` | Tài liệu giao thức |
 
@@ -52,7 +52,7 @@ Yêu cầu: .NET 10 SDK và SQL Server (LocalDB hoặc SQL Server Express).
 
 | Thao tác | Kết quả mong đợi |
 |---|---|
-| Đăng ký thiếu trường, email sai, mật khẩu không khớp | Hiện lỗi ngay trên form, không gửi yêu cầu |
+| Đăng ký thiếu trường, email sai, ngày sinh không hợp lệ, mật khẩu không khớp | Hiện lỗi ngay trên form, không gửi yêu cầu |
 | Đăng ký trùng tên | `ERR_TRUNG_TEN`, báo dưới ô tên đăng nhập |
 | Đăng nhập sai tên hoặc sai mật khẩu | Cùng một thông báo, xóa ô mật khẩu |
 | Đăng nhập đúng | Mở trang chính, hiển thị thông tin từ server |
@@ -63,5 +63,6 @@ Yêu cầu: .NET 10 SDK và SQL Server (LocalDB hoặc SQL Server Express).
 ## Ghi chú
 
 - Mật khẩu dùng PBKDF2-HMAC-SHA256, 600.000 vòng lặp, salt riêng 16 byte.
-- Bảng dùng lại từ Bài tập 2.2: `dbo.Users` với `TenDangNhap` UNIQUE, `MatKhauBam`, `Salt`, `HoTen`, `Email`.
+- Bảng `dbo.NguoiDung` gồm `UserId` khóa chính, `Username` UNIQUE, `PasswordHash`, `PasswordSalt`, `Email`, `FullName`, `Birthday`.
+- `database.sql` tạo bảng `NguoiDung`; bảng `Users` cũ (nếu có) không còn được server sử dụng.
 - Chỉ server kết nối SQL Server; client không tham chiếu `Microsoft.Data.SqlClient`.
