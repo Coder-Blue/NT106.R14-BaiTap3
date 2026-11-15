@@ -6,12 +6,13 @@ public static class GiaoThuc
 {
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8888;
+    public const int CongUdpDiscovery = 9999;
+    public const string LenhDoTimServer = "DISCOVER_SERVER";
 
     public const string LenhDangKy = "DANGKY";
     public const string LenhDangNhap = "DANGNHAP";
     public const string LenhLayThongTin = "LAYTHONGTIN";
     public const string LenhDangXuat = "DANGXUAT";
-    public const string LenhGiaHanToken = "GIAHANTOKEN";
 
     public const string ThanhCong = "OK";
     public const string LoiTrungTen = "ERR_TRUNG_TEN";

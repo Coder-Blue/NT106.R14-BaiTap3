@@ -29,7 +29,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 
 | Tệp / thư mục | Vai trò |
 |---|---|
-| `NT106.R14-BaiTap3.slnx` | Solution gồm Client, Server, Shared |
+| `NT106.R14-BaiTap3.slnx` | Solution gồm Client, Server, Shared, Server.Tests |
 | `Client/` | App WinForms: menu, đăng nhập, đăng ký, trang chính, kết nối TCP |
 | `Client/Forms/DangNhap/` | Form đăng nhập và file designer |
 | `Client/Forms/DangKy/` | Form đăng ký và file designer |
@@ -38,6 +38,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `Server/` | Server console, xử lý SQL, băm mật khẩu, phiên đăng nhập |
 | `Server/database.sql` | Script tạo database và bảng `NguoiDung` cho SSMS |
 | `Server/appsettings.json` | Chuỗi kết nối SQL Server |
+| `Server.Tests/` | Unit test cho tạm khóa đăng nhập |
 | `Shared/` | Giao thức, record dùng chung, kiểm tra dữ liệu nhập |
 
 ## Giao thức
@@ -63,7 +64,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `ERR_DU_LIEU` | Dữ liệu không hợp lệ hoặc lệnh không tồn tại |
 | `ERR_TOKEN` | Token sai, thiếu hoặc đã hết hạn |
 | `ERR_HE_THONG` | Lỗi server; chi tiết chỉ ghi ở log |
-| `ERR_TAM_KHOA`      | Đăng nhập sai 5 lần trong 5 phút; tạm khóa 5 phút, thông báo kèm thời gian chờ |
+| `ERR_TAM_KHOA` | Đăng nhập sai 5 lần trong 5 phút; tạm khóa 5 phút, thông báo kèm thời gian chờ |
 
 ## Ghi chú
 

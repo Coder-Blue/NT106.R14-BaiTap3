@@ -130,6 +130,7 @@ public partial class DangNhap : Form
         btnDangNhap.Enabled = bat;
         btnDangNhap.Text = bat ? "Đăng nhập" : "Đang xử lý...";
         btnThoat.Enabled = bat;
+        btnDoTim.Enabled = bat;
         llbDangKy.Enabled = bat;
         txtIp.Enabled = bat;
         txtPort.Enabled = bat;
@@ -160,15 +161,16 @@ public partial class DangNhap : Form
     private async void btnDoTim_Click(object sender, EventArgs e)
     {
         btnDoTim.Enabled = false;
-        lblLoi.Text = "Đang dò tìm server...";
+        lblLoi.Text = "";
+        lblTrangThaiKetNoi.Text = "Trạng thái: Đang dò tìm server...";
 
         using var udpClient = new UdpClient();
         udpClient.EnableBroadcast = true;
 
         try
         {
-            byte[] data = Encoding.UTF8.GetBytes("DISCOVER_SERVER");
-            await udpClient.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Broadcast, 9999));
+            byte[] data = Encoding.UTF8.GetBytes(GiaoThuc.LenhDoTimServer);
+            await udpClient.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Broadcast, GiaoThuc.CongUdpDiscovery));
             var receiveTask = udpClient.ReceiveAsync();
             if (await Task.WhenAny(receiveTask, Task.Delay(2000)) == receiveTask)
             {
@@ -176,16 +178,18 @@ public partial class DangNhap : Form
                 string port = Encoding.UTF8.GetString(result.Buffer);
                 txtIp.Text = result.RemoteEndPoint.Address.ToString();
                 txtPort.Text = port;
-                lblLoi.Text = "Đã tìm thấy Server!";
+                lblTrangThaiKetNoi.Text = $"Trạng thái: Đã tìm thấy server ({txtIp.Text}:{port})";
             }
             else
             {
-                lblLoi.Text = "Không tìm thấy Server trong mạng.";
+                lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
+                lblLoi.Text = "Không tìm thấy server trong mạng.";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            lblLoi.Text = "Lỗi dò tìm: " + ex.Message;
+            lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
+            lblLoi.Text = "Không thể dò tìm server. Vui lòng kiểm tra kết nối mạng.";
         }
         finally
         {

@@ -229,9 +229,9 @@ namespace NT106.R14.BaiTap3.Client.Forms
             btnDoTim.FlatStyle = FlatStyle.Flat;
             btnDoTim.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnDoTim.ForeColor = Color.White;
-            btnDoTim.Location = new Point(464, 490);
+            btnDoTim.Location = new Point(464, 145);
             btnDoTim.Name = "btnDoTim";
-            btnDoTim.Size = new Size(124, 46);
+            btnDoTim.Size = new Size(124, 31);
             btnDoTim.TabIndex = 16;
             btnDoTim.Text = "Dò tìm Server";
             btnDoTim.UseVisualStyleBackColor = false;
