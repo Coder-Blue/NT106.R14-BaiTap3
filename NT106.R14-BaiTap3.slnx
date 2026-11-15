@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Client/Client.csproj" />
+  <Project Path="Server.Tests/Server.Tests.csproj" Id="c680a76e-fffa-4ca8-8e97-eea4e8b2678c" />
   <Project Path="Server/Server.csproj" />
   <Project Path="Shared/Shared.csproj" />
 </Solution>

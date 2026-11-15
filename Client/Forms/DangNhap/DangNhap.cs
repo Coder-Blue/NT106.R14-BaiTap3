@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using NT106.R14.BaiTap3.Shared;
 
 namespace NT106.R14.BaiTap3.Client.Forms;
@@ -129,6 +130,7 @@ public partial class DangNhap : Form
         btnDangNhap.Enabled = bat;
         btnDangNhap.Text = bat ? "Đăng nhập" : "Đang xử lý...";
         btnThoat.Enabled = bat;
+        btnDoTim.Enabled = bat;
         llbDangKy.Enabled = bat;
         txtIp.Enabled = bat;
         txtPort.Enabled = bat;
@@ -153,6 +155,45 @@ public partial class DangNhap : Form
             txtTenDangNhap.Text = formDangKy.TenDangNhapDaDangKy;
             txtMatKhau.Clear();
             txtMatKhau.Focus();
+        }
+    }
+
+    private async void btnDoTim_Click(object sender, EventArgs e)
+    {
+        btnDoTim.Enabled = false;
+        lblLoi.Text = "";
+        lblTrangThaiKetNoi.Text = "Trạng thái: Đang dò tìm server...";
+
+        using var udpClient = new UdpClient();
+        udpClient.EnableBroadcast = true;
+
+        try
+        {
+            byte[] data = Encoding.UTF8.GetBytes(GiaoThuc.LenhDoTimServer);
+            await udpClient.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Broadcast, GiaoThuc.CongUdpDiscovery));
+            var receiveTask = udpClient.ReceiveAsync();
+            if (await Task.WhenAny(receiveTask, Task.Delay(2000)) == receiveTask)
+            {
+                var result = await receiveTask;
+                string port = Encoding.UTF8.GetString(result.Buffer);
+                txtIp.Text = result.RemoteEndPoint.Address.ToString();
+                txtPort.Text = port;
+                lblTrangThaiKetNoi.Text = $"Trạng thái: Đã tìm thấy server ({txtIp.Text}:{port})";
+            }
+            else
+            {
+                lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
+                lblLoi.Text = "Không tìm thấy server trong mạng.";
+            }
+        }
+        catch (Exception)
+        {
+            lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
+            lblLoi.Text = "Không thể dò tìm server. Vui lòng kiểm tra kết nối mạng.";
+        }
+        finally
+        {
+            btnDoTim.Enabled = true;
         }
     }
 }

@@ -6,6 +6,8 @@ public static class GiaoThuc
 {
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8888;
+    public const int CongUdpDiscovery = 9999;
+    public const string LenhDoTimServer = "DISCOVER_SERVER";
 
     public const string LenhDangKy = "DANGKY";
     public const string LenhDangNhap = "DANGNHAP";
@@ -18,6 +20,7 @@ public static class GiaoThuc
     public const string LoiDuLieuKhongHopLe = "ERR_DU_LIEU";
     public const string LoiHetHanToken = "ERR_TOKEN";
     public const string LoiHeThong = "ERR_HE_THONG";
+    public const string LoiTamKhoa = "ERR_TAM_KHOA";
 
     private static readonly JsonSerializerOptions TuyChonJson = new() { WriteIndented = false };
 

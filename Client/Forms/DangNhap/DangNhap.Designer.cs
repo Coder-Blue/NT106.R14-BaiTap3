@@ -33,10 +33,11 @@ namespace NT106.R14.BaiTap3.Client.Forms
             btnDangNhap = new Button();
             btnThoat = new Button();
             llbDangKy = new LinkLabel();
+            btnDoTim = new Button();
             SuspendLayout();
-            //
-            //lblTieuDe
-            //
+            // 
+            // lblTieuDe
+            // 
             lblTieuDe.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
             lblTieuDe.ForeColor = Color.FromArgb(35, 78, 120);
             lblTieuDe.Location = new Point(0, 28);
@@ -45,9 +46,9 @@ namespace NT106.R14.BaiTap3.Client.Forms
             lblTieuDe.TabIndex = 0;
             lblTieuDe.Text = "ĐĂNG NHẬP";
             lblTieuDe.TextAlign = ContentAlignment.MiddleCenter;
-            //
-            //lblPhuDe
-            //
+            // 
+            // lblPhuDe
+            // 
             lblPhuDe.Font = new Font("Segoe UI", 10.5F);
             lblPhuDe.ForeColor = Color.FromArgb(100, 100, 100);
             lblPhuDe.Location = new Point(0, 76);
@@ -56,59 +57,62 @@ namespace NT106.R14.BaiTap3.Client.Forms
             lblPhuDe.TabIndex = 1;
             lblPhuDe.Text = "Hệ thống quản lý người dùng • NT106.R14";
             lblPhuDe.TextAlign = ContentAlignment.MiddleCenter;
-            //
-            //lblKetNoi
-            //
+            // 
+            // lblKetNoi
+            // 
             lblKetNoi.AutoSize = true;
             lblKetNoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblKetNoi.ForeColor = Color.FromArgb(60, 60, 60);
             lblKetNoi.Location = new Point(48, 120);
             lblKetNoi.Name = "lblKetNoi";
+            lblKetNoi.Size = new Size(103, 19);
             lblKetNoi.TabIndex = 2;
             lblKetNoi.Text = "Kết nối server";
-            //
-            //lblIpServer
-            //
+            // 
+            // lblIpServer
+            // 
             lblIpServer.AutoSize = true;
             lblIpServer.Font = new Font("Segoe UI", 10F);
             lblIpServer.Location = new Point(48, 152);
             lblIpServer.Name = "lblIpServer";
+            lblIpServer.Size = new Size(24, 19);
             lblIpServer.TabIndex = 3;
             lblIpServer.Text = "IP:";
-            //
-            //txtIp
-            //
+            // 
+            // txtIp
+            // 
             txtIp.Font = new Font("Segoe UI", 10.5F);
             txtIp.Location = new Point(86, 147);
             txtIp.MaxLength = 45;
             txtIp.Name = "txtIp";
-            txtIp.Size = new Size(180, 31);
+            txtIp.Size = new Size(180, 26);
             txtIp.TabIndex = 4;
             txtIp.Text = "127.0.0.1";
             txtIp.TextAlign = HorizontalAlignment.Center;
-            //
-            //lblPortServer
-            //
+            // 
+            // lblPortServer
+            // 
             lblPortServer.AutoSize = true;
             lblPortServer.Font = new Font("Segoe UI", 10F);
             lblPortServer.Location = new Point(286, 152);
             lblPortServer.Name = "lblPortServer";
+            lblPortServer.Size = new Size(37, 19);
             lblPortServer.TabIndex = 5;
             lblPortServer.Text = "Port:";
-            //
-            //txtPort
-            //
+            // 
+            // txtPort
+            // 
             txtPort.Font = new Font("Segoe UI", 10.5F);
             txtPort.Location = new Point(340, 147);
             txtPort.MaxLength = 5;
             txtPort.Name = "txtPort";
-            txtPort.Size = new Size(100, 31);
+            txtPort.Size = new Size(100, 26);
             txtPort.TabIndex = 6;
             txtPort.Text = "8888";
             txtPort.TextAlign = HorizontalAlignment.Center;
-            //
-            //lblTrangThaiKetNoi
-            //
+            // 
+            // lblTrangThaiKetNoi
+            // 
             lblTrangThaiKetNoi.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             lblTrangThaiKetNoi.ForeColor = Color.FromArgb(100, 100, 100);
             lblTrangThaiKetNoi.Location = new Point(48, 186);
@@ -116,57 +120,59 @@ namespace NT106.R14.BaiTap3.Client.Forms
             lblTrangThaiKetNoi.Size = new Size(504, 22);
             lblTrangThaiKetNoi.TabIndex = 7;
             lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
-            //
-            //lblTenDangNhap
-            //
+            // 
+            // lblTenDangNhap
+            // 
             lblTenDangNhap.AutoSize = true;
             lblTenDangNhap.Font = new Font("Segoe UI", 10F);
             lblTenDangNhap.Location = new Point(48, 230);
             lblTenDangNhap.Name = "lblTenDangNhap";
+            lblTenDangNhap.Size = new Size(100, 19);
             lblTenDangNhap.TabIndex = 8;
             lblTenDangNhap.Text = "Tên đăng nhập";
-            //
-            //txtTenDangNhap
-            //
+            // 
+            // txtTenDangNhap
+            // 
             txtTenDangNhap.Font = new Font("Segoe UI", 10.5F);
             txtTenDangNhap.Location = new Point(48, 254);
             txtTenDangNhap.MaxLength = 20;
             txtTenDangNhap.Name = "txtTenDangNhap";
             txtTenDangNhap.PlaceholderText = "Nhập tên đăng nhập";
-            txtTenDangNhap.Size = new Size(504, 31);
+            txtTenDangNhap.Size = new Size(504, 26);
             txtTenDangNhap.TabIndex = 9;
-            //
-            //lblMatKhau
-            //
+            // 
+            // lblMatKhau
+            // 
             lblMatKhau.AutoSize = true;
             lblMatKhau.Font = new Font("Segoe UI", 10F);
             lblMatKhau.Location = new Point(48, 298);
             lblMatKhau.Name = "lblMatKhau";
+            lblMatKhau.Size = new Size(68, 19);
             lblMatKhau.TabIndex = 10;
             lblMatKhau.Text = "Mật khẩu";
-            //
-            //txtMatKhau
-            //
+            // 
+            // txtMatKhau
+            // 
             txtMatKhau.Font = new Font("Segoe UI", 10.5F);
             txtMatKhau.Location = new Point(48, 322);
             txtMatKhau.MaxLength = 100;
             txtMatKhau.Name = "txtMatKhau";
             txtMatKhau.PasswordChar = '●';
             txtMatKhau.PlaceholderText = "Nhập mật khẩu";
-            txtMatKhau.Size = new Size(504, 31);
+            txtMatKhau.Size = new Size(504, 26);
             txtMatKhau.TabIndex = 11;
-            //
-            //lblLoi
-            //
+            // 
+            // lblLoi
+            // 
             lblLoi.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             lblLoi.ForeColor = Color.FromArgb(192, 40, 40);
             lblLoi.Location = new Point(48, 366);
             lblLoi.Name = "lblLoi";
             lblLoi.Size = new Size(504, 44);
             lblLoi.TabIndex = 12;
-            //
-            //btnDangNhap
-            //
+            // 
+            // btnDangNhap
+            // 
             btnDangNhap.BackColor = Color.FromArgb(51, 122, 183);
             btnDangNhap.Cursor = Cursors.Hand;
             btnDangNhap.FlatAppearance.BorderSize = 0;
@@ -182,9 +188,9 @@ namespace NT106.R14.BaiTap3.Client.Forms
             btnDangNhap.Text = "Đăng nhập";
             btnDangNhap.UseVisualStyleBackColor = false;
             btnDangNhap.Click += btnDangNhap_Click;
-            //
-            //btnThoat
-            //
+            // 
+            // btnThoat
+            // 
             btnThoat.BackColor = Color.White;
             btnThoat.Cursor = Cursors.Hand;
             btnThoat.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
@@ -200,9 +206,9 @@ namespace NT106.R14.BaiTap3.Client.Forms
             btnThoat.Text = "Thoát";
             btnThoat.UseVisualStyleBackColor = false;
             btnThoat.Click += btnThoat_Click;
-            //
-            //llbDangKy
-            //
+            // 
+            // llbDangKy
+            // 
             llbDangKy.Font = new Font("Segoe UI", 9.75F);
             llbDangKy.Location = new Point(48, 490);
             llbDangKy.Name = "llbDangKy";
@@ -212,15 +218,34 @@ namespace NT106.R14.BaiTap3.Client.Forms
             llbDangKy.Text = "Chưa có tài khoản? Đăng ký ngay";
             llbDangKy.TextAlign = ContentAlignment.MiddleCenter;
             llbDangKy.LinkClicked += llbDangKy_LinkClicked;
-            //
-            //DangNhap
-            //
+            // 
+            // btnDoTim
+            // 
+            btnDoTim.BackColor = Color.FromArgb(51, 122, 183);
+            btnDoTim.Cursor = Cursors.Hand;
+            btnDoTim.FlatAppearance.BorderSize = 0;
+            btnDoTim.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnDoTim.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
+            btnDoTim.FlatStyle = FlatStyle.Flat;
+            btnDoTim.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            btnDoTim.ForeColor = Color.White;
+            btnDoTim.Location = new Point(464, 145);
+            btnDoTim.Name = "btnDoTim";
+            btnDoTim.Size = new Size(124, 31);
+            btnDoTim.TabIndex = 16;
+            btnDoTim.Text = "Dò tìm Server";
+            btnDoTim.UseVisualStyleBackColor = false;
+            btnDoTim.Click += btnDoTim_Click;
+            // 
+            // DangNhap
+            // 
             AcceptButton = btnDangNhap;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             CancelButton = btnThoat;
             ClientSize = new Size(600, 540);
+            Controls.Add(btnDoTim);
             Controls.Add(lblTieuDe);
             Controls.Add(lblPhuDe);
             Controls.Add(lblKetNoi);
@@ -266,5 +291,6 @@ namespace NT106.R14.BaiTap3.Client.Forms
         private Button btnDangNhap;
         private Button btnThoat;
         private LinkLabel llbDangKy;
+        private Button btnDoTim;
     }
 }
