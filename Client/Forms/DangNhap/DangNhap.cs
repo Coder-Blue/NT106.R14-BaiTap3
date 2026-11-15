@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using NT106.R14.BaiTap3.Shared;
 
 namespace NT106.R14.BaiTap3.Client.Forms;
@@ -153,6 +154,42 @@ public partial class DangNhap : Form
             txtTenDangNhap.Text = formDangKy.TenDangNhapDaDangKy;
             txtMatKhau.Clear();
             txtMatKhau.Focus();
+        }
+    }
+
+    private async void btnDoTim_Click(object sender, EventArgs e)
+    {
+        btnDoTim.Enabled = false;
+        lblLoi.Text = "Đang dò tìm server...";
+
+        using var udpClient = new UdpClient();
+        udpClient.EnableBroadcast = true;
+
+        try
+        {
+            byte[] data = Encoding.UTF8.GetBytes("DISCOVER_SERVER");
+            await udpClient.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Broadcast, 9999));
+            var receiveTask = udpClient.ReceiveAsync();
+            if (await Task.WhenAny(receiveTask, Task.Delay(2000)) == receiveTask)
+            {
+                var result = await receiveTask;
+                string port = Encoding.UTF8.GetString(result.Buffer);
+                txtIp.Text = result.RemoteEndPoint.Address.ToString();
+                txtPort.Text = port;
+                lblLoi.Text = "Đã tìm thấy Server!";
+            }
+            else
+            {
+                lblLoi.Text = "Không tìm thấy Server trong mạng.";
+            }
+        }
+        catch (Exception ex)
+        {
+            lblLoi.Text = "Lỗi dò tìm: " + ex.Message;
+        }
+        finally
+        {
+            btnDoTim.Enabled = true;
         }
     }
 }

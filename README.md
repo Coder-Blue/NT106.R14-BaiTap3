@@ -6,6 +6,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 ## Chức năng
 
 - Menu chọn mở Client hoặc Server.
+- Tự động dò tìm Server trong mạng LAN bằng giao thức UDP Broadcast (Cổng 9999).
 - Đăng ký tài khoản: kiểm tra dữ liệu ở client và server, kiểm tra trùng tên, băm mật khẩu bằng PBKDF2.
 - Đăng nhập: xác thực bằng hash + salt, trả thông tin người dùng, cấp token 30 phút.
 - Trang chính: hiển thị thông tin tài khoản, đăng xuất, đóng bằng nút X cũng gỡ phiên.
@@ -22,7 +23,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
    ```
 
 4. Tạo database bằng SSMS: mở `Server/database.sql` và bấm Execute. Nếu dùng instance khác, sửa `Server/appsettings.json` rồi build lại server.
-5. Trên form đăng nhập, nhập IP `127.0.0.1`, cổng `8888`, sau đó đăng ký hoặc đăng nhập.
+5. Trên form đăng nhập, nhập IP `127.0.0.1`, cổng `8888`, sau đó đăng ký hoặc đăng nhập. Hoặc bấm nút "Dò tìm Server" để tự động điền IP và Port nếu Server đang chạy trong cùng mạng LAN.
 
 ## Cấu trúc
 
@@ -43,6 +44,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 
 - TCP cổng `8888`, UTF-8, mỗi yêu cầu/phản hồi là một dòng JSON kết thúc bằng `\n`.
 - Token: chuỗi hex 32 byte, hết hạn sau 30 phút.
+- UDP Discovery: Cổng `9999`, Client gửi `DISCOVER_SERVER`, Server trả lời Port TCP (`8888`).
 
 | Lệnh | Tham số gửi lên | Phản hồi thành công |
 |---|---|---|
@@ -69,3 +71,4 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 - Bảng `dbo.NguoiDung`: `UserId` khóa chính, `Username` UNIQUE, `PasswordHash`, `PasswordSalt`, `Email`, `FullName`, `Birthday`.
 - Chỉ server kết nối SQL Server; client không tham chiếu `Microsoft.Data.SqlClient`.
 - Tạm khóa đăng nhập: tính theo tên đăng nhập + IP, sai 5 lần trong cửa sổ 5 phút thì khóa 5 phút. Đăng nhập đúng hoặc hết thời gian khóa thì đếm lại từ đầu.
+- UDP Discovery: Server lắng nghe trên cổng 9999, Client gửi broadcast.
