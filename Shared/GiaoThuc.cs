@@ -18,6 +18,7 @@ public static class GiaoThuc
     public const string LoiDuLieuKhongHopLe = "ERR_DU_LIEU";
     public const string LoiHetHanToken = "ERR_TOKEN";
     public const string LoiHeThong = "ERR_HE_THONG";
+    public const string LoiTamKhoa = "ERR_TAM_KHOA";
 
     private static readonly JsonSerializerOptions TuyChonJson = new() { WriteIndented = false };
 

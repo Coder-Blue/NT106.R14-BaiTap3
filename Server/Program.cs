@@ -11,6 +11,7 @@ namespace NT106.R14.BaiTap3.Server;
 internal static class Program
 {
     private static readonly ConcurrentDictionary<string, PhienDangNhap> DanhSachPhien = new();
+    private static readonly KhoaDangNhap BoKhoaDangNhap = new();
     private static readonly TimeSpan ThoiHanPhien = TimeSpan.FromMinutes(30);
 
     private static async Task Main()
@@ -73,6 +74,7 @@ internal static class Program
     private static async Task PhucVuClientAsync(TcpClient client, CancellationToken token)
     {
         string maPhien = client.Client.RemoteEndPoint?.ToString() ?? Guid.NewGuid().ToString();
+        string ip = (client.Client.RemoteEndPoint as IPEndPoint)?.Address.ToString() ?? "khong-ro";
         DanhSachPhien[maPhien] = PhienDangNhap.ChuaDangNhap;
         GhiLog($"[+] Kết nối mới từ {maPhien} | Đang hoạt động: {DanhSachPhien.Count}");
 
@@ -132,7 +134,7 @@ internal static class Program
                     break;
                 }
 
-                PhanHoi phanHoi = await XuLyYeuCauAsync(maPhien, yeuCau);
+                PhanHoi phanHoi = await XuLyYeuCauAsync(maPhien, ip, yeuCau);
                 await boGhi.WriteLineAsync(GiaoThuc.DongGoi(phanHoi));
             }
         }
@@ -162,14 +164,14 @@ internal static class Program
         }
     }
 
-    private static async Task<PhanHoi> XuLyYeuCauAsync(string maPhien, YeuCau yeuCau)
+    private static async Task<PhanHoi> XuLyYeuCauAsync(string maPhien, string ip, YeuCau yeuCau)
     {
         try
         {
             return yeuCau.MaLenh switch
             {
                 GiaoThuc.LenhDangKy => await DangKyAsync(yeuCau),
-                GiaoThuc.LenhDangNhap => await DangNhapAsync(maPhien, yeuCau),
+                GiaoThuc.LenhDangNhap => await DangNhapAsync(maPhien, ip, yeuCau),
                 GiaoThuc.LenhLayThongTin => await LayThongTinAsync(maPhien, yeuCau),
                 _ => new PhanHoi(false, GiaoThuc.LoiDuLieuKhongHopLe, "Lệnh không hợp lệ."),
             };
@@ -223,7 +225,7 @@ internal static class Program
         return new PhanHoi(true, GiaoThuc.ThanhCong, "Đăng ký thành công. Bạn có thể đăng nhập ngay.");
     }
 
-    private static async Task<PhanHoi> DangNhapAsync(string maPhien, YeuCau yeuCau)
+    private static async Task<PhanHoi> DangNhapAsync(string maPhien, string ip, YeuCau yeuCau)
     {
         string tenDangNhap = yeuCau.TenDangNhap.Trim();
 
@@ -232,12 +234,28 @@ internal static class Program
             return new PhanHoi(false, GiaoThuc.LoiSaiThongTin, "Tên đăng nhập hoặc mật khẩu không đúng.");
         }
 
+        if (BoKhoaDangNhap.ThoiGianConKhoa(tenDangNhap, ip) is TimeSpan conKhoa)
+        {
+            GhiLog($"[KHÓA] Từ chối đăng nhập: {ip} ({tenDangNhap}), còn {(int)conKhoa.TotalSeconds}s");
+            return PhanHoiTamKhoa(conKhoa);
+        }
+
         NguoiDung? nguoiDung = await XuLyNguoiDung.DangNhap(tenDangNhap, yeuCau.MatKhau);
         if (nguoiDung is null)
         {
-            GhiLog($"[ĐĂNG NHẬP] Thất bại: {maPhien} ({tenDangNhap})");
+            (int soLanSai, TimeSpan? khoaTrong) = BoKhoaDangNhap.GhiNhanSai(tenDangNhap, ip);
+            GhiLog($"[ĐĂNG NHẬP] Thất bại lần {soLanSai}/{KhoaDangNhap.SoLanSaiToiDa}: {ip} ({tenDangNhap})");
+
+            if (khoaTrong is TimeSpan thoiGianKhoa)
+            {
+                GhiLog($"[KHÓA] Tạm khóa {tenDangNhap} từ {ip} trong {(int)thoiGianKhoa.TotalSeconds}s");
+                return PhanHoiTamKhoa(thoiGianKhoa);
+            }
+
             return new PhanHoi(false, GiaoThuc.LoiSaiThongTin, "Tên đăng nhập hoặc mật khẩu không đúng.");
         }
+
+        BoKhoaDangNhap.XoaKhiThanhCong(tenDangNhap, ip);
 
         string token = MatKhau.TaoToken();
         var phien = new PhienDangNhap(nguoiDung.Username, token, DateTime.UtcNow.Add(ThoiHanPhien));
@@ -245,6 +263,13 @@ internal static class Program
 
         GhiLog($"[ĐĂNG NHẬP] Thành công: {maPhien} -> {nguoiDung.Username}");
         return new PhanHoi(true, GiaoThuc.ThanhCong, "Đăng nhập thành công.", nguoiDung, token, phien.HetHan);
+    }
+
+    private static PhanHoi PhanHoiTamKhoa(TimeSpan conLai)
+    {
+        int giay = (int)Math.Ceiling(conLai.TotalSeconds);
+        string cho = giay >= 60 ? $"{giay / 60} phút {giay % 60} giây" : $"{giay} giây";
+        return new PhanHoi(false, GiaoThuc.LoiTamKhoa, $"Bạn đã đăng nhập sai quá nhiều lần. Vui lòng thử lại sau {cho}.");
     }
 
     private static async Task<PhanHoi> LayThongTinAsync(string maPhien, YeuCau yeuCau)
