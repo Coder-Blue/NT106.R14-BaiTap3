@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -10,9 +9,8 @@ namespace NT106.R14.BaiTap3.Server;
 
 internal static class Program
 {
-    private static readonly ConcurrentDictionary<string, PhienDangNhap> DanhSachPhien = new();
+    private static readonly QuanLyPhien Phien = new();
     private static readonly KhoaDangNhap BoKhoaDangNhap = new();
-    private static readonly TimeSpan ThoiHanPhien = TimeSpan.FromMinutes(30);
 
     private static async Task Main()
     {
@@ -76,8 +74,8 @@ internal static class Program
     {
         string maPhien = client.Client.RemoteEndPoint?.ToString() ?? Guid.NewGuid().ToString();
         string ip = (client.Client.RemoteEndPoint as IPEndPoint)?.Address.ToString() ?? "khong-ro";
-        DanhSachPhien[maPhien] = PhienDangNhap.ChuaDangNhap;
-        GhiLog($"[+] Kết nối mới từ {maPhien} | Đang hoạt động: {DanhSachPhien.Count}");
+        Phien.ThemKetNoi(maPhien);
+        GhiLog($"[+] Kết nối mới từ {maPhien} | Đang hoạt động: {Phien.SoPhien}");
 
         try
         {
@@ -119,7 +117,7 @@ internal static class Program
 
                 if (yeuCau.MaLenh == GiaoThuc.LenhDangXuat)
                 {
-                    PhienDangNhap? phien = TimPhien(maPhien, yeuCau.Token);
+                    PhienDangNhap? phien = Phien.TimPhien(maPhien, yeuCau.Token);
                     if (phien is null)
                     {
                         var loiToken = new PhanHoi(false, GiaoThuc.LoiHetHanToken, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn.");
@@ -127,8 +125,8 @@ internal static class Program
                         continue;
                     }
 
-                    DanhSachPhien.TryRemove(maPhien, out _);
-                    GhiLog($"[-] Client {maPhien} ({phien.TenDangNhap}) đăng xuất. Còn lại: {DanhSachPhien.Count}");
+                    Phien.XoaPhien(maPhien);
+                    GhiLog($"[-] Client {maPhien} ({phien.TenDangNhap}) đăng xuất. Còn lại: {Phien.SoPhien}");
 
                     var phanHoiDangXuat = new PhanHoi(true, GiaoThuc.ThanhCong, "Đã đăng xuất.");
                     await boGhi.WriteLineAsync(GiaoThuc.DongGoi(phanHoiDangXuat));
@@ -156,9 +154,10 @@ internal static class Program
         }
         finally
         {
-            if (DanhSachPhien.TryRemove(maPhien, out PhienDangNhap? phienConLai))
+            PhienDangNhap? phienConLai = Phien.XoaPhien(maPhien);
+            if (phienConLai is not null)
             {
-                GhiLog($"[-] Đã gỡ phiên {maPhien} ({phienConLai.TenDangNhap}). Còn lại: {DanhSachPhien.Count}");
+                GhiLog($"[-] Đã gỡ phiên {maPhien} ({phienConLai.TenDangNhap}). Còn lại: {Phien.SoPhien}");
             }
 
             client.Close();
@@ -174,6 +173,7 @@ internal static class Program
                 GiaoThuc.LenhDangKy => await DangKyAsync(yeuCau),
                 GiaoThuc.LenhDangNhap => await DangNhapAsync(maPhien, ip, yeuCau),
                 GiaoThuc.LenhLayThongTin => await LayThongTinAsync(maPhien, yeuCau),
+                GiaoThuc.LenhGiaHanToken => GiaHanToken(maPhien, yeuCau),
                 _ => new PhanHoi(false, GiaoThuc.LoiDuLieuKhongHopLe, "Lệnh không hợp lệ."),
             };
         }
@@ -258,12 +258,11 @@ internal static class Program
 
         BoKhoaDangNhap.XoaKhiThanhCong(tenDangNhap, ip);
 
-        string token = MatKhau.TaoToken();
-        var phien = new PhienDangNhap(nguoiDung.Username, token, DateTime.UtcNow.Add(ThoiHanPhien));
-        DanhSachPhien[maPhien] = phien;
+        PhienDangNhap phien = Phien.TaoPhien(nguoiDung.Username);
+        Phien.DatPhien(maPhien, phien);
 
         GhiLog($"[ĐĂNG NHẬP] Thành công: {maPhien} -> {nguoiDung.Username}");
-        return new PhanHoi(true, GiaoThuc.ThanhCong, "Đăng nhập thành công.", nguoiDung, token, phien.HetHan);
+        return new PhanHoi(true, GiaoThuc.ThanhCong, "Đăng nhập thành công.", nguoiDung, phien.Token, phien.HetHan);
     }
 
     private static PhanHoi PhanHoiTamKhoa(TimeSpan conLai)
@@ -275,7 +274,7 @@ internal static class Program
 
     private static async Task<PhanHoi> LayThongTinAsync(string maPhien, YeuCau yeuCau)
     {
-        PhienDangNhap? phien = TimPhien(maPhien, yeuCau.Token);
+        PhienDangNhap? phien = Phien.TimPhien(maPhien, yeuCau.Token);
         if (phien is null)
         {
             return new PhanHoi(false, GiaoThuc.LoiHetHanToken, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn.");
@@ -287,25 +286,17 @@ internal static class Program
             : new PhanHoi(true, GiaoThuc.ThanhCong, "OK", nguoiDung);
     }
 
-    private static PhienDangNhap? TimPhien(string maPhien, string token)
+    private static PhanHoi GiaHanToken(string maPhien, YeuCau yeuCau)
     {
-        if (token.Length == 0 || !DanhSachPhien.TryGetValue(maPhien, out PhienDangNhap? phien))
+        PhienDangNhap? phienMoi = Phien.GiaHanPhien(maPhien, yeuCau.Token);
+        if (phienMoi is null)
         {
-            return null;
+            GhiLog($"[TOKEN] Gia hạn thất bại: {maPhien}");
+            return new PhanHoi(false, GiaoThuc.LoiHetHanToken, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn.");
         }
 
-        if (phien.Token != token || phien.HetHan <= DateTime.UtcNow)
-        {
-            if (phien.Token.Length > 0)
-            {
-                GhiLog($"[TOKEN] Token không hợp lệ hoặc đã hết hạn: {maPhien}");
-            }
-
-            DanhSachPhien.TryRemove(maPhien, out _);
-            return null;
-        }
-
-        return phien;
+        GhiLog($"[GIA HẠN] {maPhien} ({phienMoi.TenDangNhap}) đến {phienMoi.HetHan:dd/MM/yyyy HH:mm:ss} UTC");
+        return new PhanHoi(true, GiaoThuc.ThanhCong, "Gia hạn phiên thành công.", null, phienMoi.Token, phienMoi.HetHan);
     }
 
     private static async Task LangNgheUdpDiscovery(CancellationToken token)
@@ -319,10 +310,10 @@ internal static class Program
             {
                 var result = await udpServer.ReceiveAsync(token);
                 string yeuCau = Encoding.UTF8.GetString(result.Buffer);
+                string? phanHoi = UdpDiscovery.TaoPhanHoi(yeuCau);
 
-                if (yeuCau == GiaoThuc.LenhDoTimServer)
+                if (phanHoi is not null)
                 {
-                    string phanHoi = GiaoThuc.CongMacDinh.ToString();
                     byte[] data = Encoding.UTF8.GetBytes(phanHoi);
                     await udpServer.SendAsync(data.AsMemory(), result.RemoteEndPoint, token);
                     GhiLog($"[UDP] Đã trả lời dò tìm cho {result.RemoteEndPoint}");

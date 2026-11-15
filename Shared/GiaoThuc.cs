@@ -12,6 +12,7 @@ public static class GiaoThuc
     public const string LenhDangKy = "DANGKY";
     public const string LenhDangNhap = "DANGNHAP";
     public const string LenhLayThongTin = "LAYTHONGTIN";
+    public const string LenhGiaHanToken = "GIAHANTOKEN";
     public const string LenhDangXuat = "DANGXUAT";
 
     public const string ThanhCong = "OK";

@@ -9,7 +9,7 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 - Tự động dò tìm Server trong mạng LAN bằng giao thức UDP Broadcast (Cổng 9999).
 - Đăng ký tài khoản: kiểm tra dữ liệu ở client và server, kiểm tra trùng tên, băm mật khẩu bằng PBKDF2.
 - Đăng nhập: xác thực bằng hash + salt, trả thông tin người dùng, cấp token 30 phút.
-- Trang chính: hiển thị thông tin tài khoản, đăng xuất, đóng bằng nút X cũng gỡ phiên.
+- Trang chính: hiển thị thông tin tài khoản, đồng hồ đếm ngược phiên và tự động gia hạn token khi còn dưới 5 phút; đăng xuất, đóng bằng nút X cũng gỡ phiên.
 - Server: `TcpListener` tại `IPAddress.Any:8888`, mỗi client một tác vụ.
 
 ## Cài đặt và chạy
@@ -38,13 +38,13 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `Server/` | Server console, xử lý SQL, băm mật khẩu, phiên đăng nhập |
 | `Server/database.sql` | Script tạo database và bảng `NguoiDung` cho SSMS |
 | `Server/appsettings.json` | Chuỗi kết nối SQL Server |
-| `Server.Tests/` | Unit test cho tạm khóa đăng nhập |
+| `Server.Tests/` | Unit test cho tạm khóa đăng nhập và quản lý phiên |
 | `Shared/` | Giao thức, record dùng chung, kiểm tra dữ liệu nhập |
 
 ## Giao thức
 
 - TCP cổng `8888`, UTF-8, mỗi yêu cầu/phản hồi là một dòng JSON kết thúc bằng `\n`.
-- Token: chuỗi hex 32 byte, hết hạn sau 30 phút.
+- Token: chuỗi hex 32 byte, hết hạn sau 30 phút. Gia hạn sẽ tạo token mới và cộng thêm 30 phút vào thời hạn hiện tại; token cũ không còn hiệu lực.
 - UDP Discovery: Cổng `9999`, Client gửi `DISCOVER_SERVER`, Server trả lời Port TCP (`8888`).
 
 | Lệnh | Tham số gửi lên | Phản hồi thành công |
@@ -52,9 +52,17 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `DANGKY` | `TenDangNhap`, `MatKhau`, `HoTen`, `Email`, `Birthday` | `OK`, `ThongBao` |
 | `DANGNHAP` | `TenDangNhap`, `MatKhau` | `OK`, `DuLieuNguoiDung`, `Token`, `HetHanToken` |
 | `LAYTHONGTIN` | `Token` | `OK`, `DuLieuNguoiDung` |
+| `GIAHANTOKEN` | `Token` | `OK`, `Token` (mới), `HetHanToken` (mới) |
 | `DANGXUAT` | `Token` | `OK`; server gỡ phiên và đóng kết nối |
 
 `DuLieuNguoiDung` gồm `UserId`, `Username`, `FullName`, `Email`, `Birthday`.
+
+Ví dụ gia hạn phiên:
+
+```text
+Gửi:  {"MaLenh":"GIAHANTOKEN","Token":"<token hiện tại>"}
+Nhận: {"ThanhCong":true,"MaLoi":"OK","ThongBao":"Gia hạn phiên thành công.","DuLieuNguoiDung":null,"Token":"<token mới>","HetHanToken":"<thời điểm hết hạn mới>"}
+```
 
 | Mã lỗi | Ý nghĩa |
 |---|---|
@@ -66,6 +74,13 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `ERR_HE_THONG` | Lỗi server; chi tiết chỉ ghi ở log |
 | `ERR_TAM_KHOA` | Đăng nhập sai 5 lần trong 5 phút; tạm khóa 5 phút, thông báo kèm thời gian chờ |
 
+## Kiểm thử
+
+```powershell
+dotnet test NT106.R14-BaiTap3.slnx
+dotnet format NT106.R14-BaiTap3.slnx --verify-no-changes
+```
+
 ## Ghi chú
 
 - Mật khẩu dùng PBKDF2-HMAC-SHA256, 600.000 vòng lặp, salt riêng 16 byte.
@@ -73,3 +88,4 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 - Chỉ server kết nối SQL Server; client không tham chiếu `Microsoft.Data.SqlClient`.
 - Tạm khóa đăng nhập: tính theo tên đăng nhập + IP, sai 5 lần trong cửa sổ 5 phút thì khóa 5 phút. Đăng nhập đúng hoặc hết thời gian khóa thì đếm lại từ đầu.
 - UDP Discovery: Server lắng nghe trên cổng 9999, Client gửi broadcast.
+- Gia hạn phiên: khi còn dưới 5 phút, Client gửi `GIAHANTOKEN`; Server kiểm tra token, tạo token mới và cộng thêm 30 phút. Nếu nhận `ERR_TOKEN`, Client thông báo và quay về form đăng nhập.

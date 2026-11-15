@@ -8,6 +8,11 @@ public partial class FormChinh : Form
     private KetNoiTcp? ketNoi;
     private string token = "";
     private bool daDongKetNoi;
+    private System.Windows.Forms.Timer? timerPhien;
+    private DateTime thoiGianHetHan = DateTime.MaxValue;
+    private bool dangGiaHan;
+    private DateTime lanGiaHanTiepTheo = DateTime.MinValue;
+    private string? thongBaoKetThuc;
 
     public FormChinh() => InitializeComponent();
 
@@ -15,14 +20,26 @@ public partial class FormChinh : Form
     {
         this.ketNoi = ketNoi;
         this.token = token;
+        thoiGianHetHan = hetHan ?? DateTime.MaxValue;
 
         HienThiNguoiDung(nguoiDung);
-        lblTrangThai.Text = hetHan is null
-            ? "Trạng thái: Đã kết nối"
-            : $"Trạng thái: Đã kết nối • Phiên hết hạn lúc {hetHan.Value.ToLocalTime():HH:mm dd/MM/yyyy}";
+
+        if (hetHan is not null)
+        {
+            timerPhien = new System.Windows.Forms.Timer { Interval = 1000 };
+            timerPhien.Tick += TimerPhien_Tick;
+            timerPhien.Start();
+            CapNhatTrangThai();
+        }
+        else
+        {
+            lblTrangThai.Text = "Trạng thái: Đã kết nối";
+        }
 
         FormClosing += FormChinh_FormClosing;
     }
+
+    public string? ThongBaoKetThuc => thongBaoKetThuc;
 
     private void HienThiNguoiDung(NguoiDung nguoiDung)
     {
@@ -52,7 +69,7 @@ public partial class FormChinh : Form
             PhanHoi phanHoi = await ketNoi.GuiYeuCauAsync(
                 new YeuCau(GiaoThuc.LenhLayThongTin, Token: token));
 
-            if (IsDisposed)
+            if (IsDisposed || daDongKetNoi)
             {
                 return;
             }
@@ -65,21 +82,27 @@ public partial class FormChinh : Form
 
             if (phanHoi.MaLoi == GiaoThuc.LoiHetHanToken)
             {
-                MessageBox.Show(this, phanHoi.ThongBao, "Phiên đăng nhập",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                daDongKetNoi = true;
-                ketNoi.Dispose();
-                Close();
+                KetThucPhien(ThongBaoLoi(phanHoi));
+                return;
             }
+
+            string thongBao = string.IsNullOrWhiteSpace(phanHoi.ThongBao)
+                ? "Không tải được thông tin người dùng. Vui lòng thử lại."
+                : phanHoi.ThongBao;
+            MessageBox.Show(this, thongBao, "Trang chính",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         catch (OperationCanceledException)
         {
+            KetThucPhien("Không nhận được phản hồi từ server. Vui lòng đăng nhập lại.");
         }
         catch (SocketException)
         {
+            KetThucPhien("Mất kết nối tới server. Vui lòng đăng nhập lại.");
         }
         catch (IOException)
         {
+            KetThucPhien("Mất kết nối tới server. Vui lòng đăng nhập lại.");
         }
         catch (ObjectDisposedException)
         {
@@ -93,14 +116,144 @@ public partial class FormChinh : Form
         }
     }
 
+    private async void TimerPhien_Tick(object? sender, EventArgs e)
+    {
+        if (IsDisposed || daDongKetNoi || thoiGianHetHan == DateTime.MaxValue)
+        {
+            return;
+        }
+
+        TimeSpan conLai = thoiGianHetHan - DateTime.UtcNow;
+        if (conLai <= TimeSpan.Zero)
+        {
+            timerPhien?.Stop();
+            KetThucPhien("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+            return;
+        }
+
+        CapNhatTrangThai();
+
+        if (conLai.TotalMinutes <= 5 && !dangGiaHan && DateTime.UtcNow >= lanGiaHanTiepTheo)
+        {
+            await GiaHanPhienAsync();
+        }
+    }
+
+    private void CapNhatTrangThai()
+    {
+        if (thoiGianHetHan == DateTime.MaxValue)
+        {
+            return;
+        }
+
+        if (DateTime.UtcNow < lanGiaHanTiepTheo)
+        {
+            lblTrangThai.Text = "Trạng thái: Đã kết nối • Chưa gia hạn được phiên, sẽ thử lại...";
+            return;
+        }
+
+        TimeSpan conLai = thoiGianHetHan - DateTime.UtcNow;
+        if (conLai < TimeSpan.Zero)
+        {
+            conLai = TimeSpan.Zero;
+        }
+
+        string thoiGian = conLai.TotalHours >= 1
+            ? conLai.ToString(@"h\:mm\:ss")
+            : conLai.ToString(@"mm\:ss");
+        lblTrangThai.Text = $"Trạng thái: Đã kết nối • Còn lại: {thoiGian}";
+    }
+
+    private async Task GiaHanPhienAsync()
+    {
+        if (ketNoi is null || daDongKetNoi)
+        {
+            return;
+        }
+
+        dangGiaHan = true;
+        try
+        {
+            PhanHoi phanHoi = await ketNoi.GuiYeuCauAsync(
+                new YeuCau(GiaoThuc.LenhGiaHanToken, Token: token));
+
+            if (IsDisposed || daDongKetNoi)
+            {
+                return;
+            }
+
+            if (phanHoi.ThanhCong && phanHoi.Token.Length > 0 && phanHoi.HetHanToken.HasValue)
+            {
+                token = phanHoi.Token;
+                thoiGianHetHan = phanHoi.HetHanToken.Value;
+                lanGiaHanTiepTheo = DateTime.MinValue;
+                CapNhatTrangThai();
+                return;
+            }
+
+            if (phanHoi.MaLoi == GiaoThuc.LoiHetHanToken)
+            {
+                KetThucPhien(ThongBaoLoi(phanHoi));
+                return;
+            }
+
+            lanGiaHanTiepTheo = DateTime.UtcNow.AddSeconds(10);
+            CapNhatTrangThai();
+        }
+        catch (OperationCanceledException)
+        {
+            KetThucPhien("Không nhận được phản hồi từ server. Vui lòng đăng nhập lại.");
+        }
+        catch (SocketException)
+        {
+            KetThucPhien("Mất kết nối tới server. Vui lòng đăng nhập lại.");
+        }
+        catch (IOException)
+        {
+            KetThucPhien("Mất kết nối tới server. Vui lòng đăng nhập lại.");
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+        finally
+        {
+            dangGiaHan = false;
+        }
+    }
+
+    private static string ThongBaoLoi(PhanHoi phanHoi) =>
+        string.IsNullOrWhiteSpace(phanHoi.ThongBao)
+            ? "Phiên đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại."
+            : phanHoi.ThongBao;
+
+    private void KetThucPhien(string thongBao)
+    {
+        if (daDongKetNoi)
+        {
+            return;
+        }
+
+        daDongKetNoi = true;
+        thongBaoKetThuc = thongBao;
+        timerPhien?.Stop();
+        timerPhien?.Dispose();
+        timerPhien = null;
+        MessageBox.Show(this, thongBao, "Phiên đăng nhập",
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        ketNoi?.Dispose();
+        ketNoi = null;
+        Close();
+    }
+
     private async void btnDangXuat_Click(object? sender, EventArgs e)
     {
         btnDangXuat.Enabled = false;
         btnDangXuat.Text = "Đang đăng xuất...";
+        timerPhien?.Stop();
 
         try
         {
-            if (!daDongKetNoi && ketNoi is { } && ketNoi.DangKetNoi())
+            if (!daDongKetNoi && !dangGiaHan && ketNoi is { } && ketNoi.DangKetNoi())
             {
                 await ketNoi.GuiYeuCauAsync(new YeuCau(GiaoThuc.LenhDangXuat, Token: token));
             }
@@ -121,19 +274,32 @@ public partial class FormChinh : Form
         {
             daDongKetNoi = true;
             ketNoi?.Dispose();
+            ketNoi = null;
             Close();
         }
     }
 
     private void FormChinh_FormClosing(object? sender, FormClosingEventArgs e)
     {
+        timerPhien?.Stop();
+        timerPhien?.Dispose();
+        timerPhien = null;
+
         if (daDongKetNoi)
         {
             return;
         }
 
         daDongKetNoi = true;
-        ketNoi?.GuiNhanhVaDong(new YeuCau(GiaoThuc.LenhDangXuat, Token: token));
+        if (dangGiaHan)
+        {
+            ketNoi?.Dispose();
+        }
+        else
+        {
+            ketNoi?.GuiNhanhVaDong(new YeuCau(GiaoThuc.LenhDangXuat, Token: token));
+        }
+
         ketNoi = null;
     }
 }

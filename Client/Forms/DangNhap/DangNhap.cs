@@ -117,6 +117,10 @@ public partial class DangNhap : Form
                 phanHoi.Token,
                 phanHoi.HetHanToken);
             formChinh.ShowDialog();
+
+            lblTrangThaiKetNoi.Text = string.IsNullOrEmpty(formChinh.ThongBaoKetThuc)
+                ? "Trạng thái: Đã đăng xuất"
+                : "Trạng thái: Phiên đã kết thúc";
         }
         finally
         {
