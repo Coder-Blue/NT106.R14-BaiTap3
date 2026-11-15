@@ -61,9 +61,11 @@ Client chỉ hiển thị giao diện; server làm việc với SQL Server và p
 | `ERR_DU_LIEU` | Dữ liệu không hợp lệ hoặc lệnh không tồn tại |
 | `ERR_TOKEN` | Token sai, thiếu hoặc đã hết hạn |
 | `ERR_HE_THONG` | Lỗi server; chi tiết chỉ ghi ở log |
+| `ERR_TAM_KHOA`      | Đăng nhập sai 5 lần trong 5 phút; tạm khóa 5 phút, thông báo kèm thời gian chờ |
 
 ## Ghi chú
 
 - Mật khẩu dùng PBKDF2-HMAC-SHA256, 600.000 vòng lặp, salt riêng 16 byte.
 - Bảng `dbo.NguoiDung`: `UserId` khóa chính, `Username` UNIQUE, `PasswordHash`, `PasswordSalt`, `Email`, `FullName`, `Birthday`.
 - Chỉ server kết nối SQL Server; client không tham chiếu `Microsoft.Data.SqlClient`.
+- Tạm khóa đăng nhập: tính theo tên đăng nhập + IP, sai 5 lần trong cửa sổ 5 phút thì khóa 5 phút. Đăng nhập đúng hoặc hết thời gian khóa thì đếm lại từ đầu.
