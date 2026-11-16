@@ -1,68 +1,38 @@
 # NT106.R14 - Bài tập 3
 
-Bài tập 3: ứng dụng quản lý người dùng theo mô hình client - server, giao tiếp bằng TCP socket.
-Client chỉ hiển thị giao diện; server làm việc với SQL Server và phục vụ nhiều client cùng lúc.
+Ứng dụng quản lý người dùng client-server qua TCP socket. Client chỉ hiển thị giao diện; server xử lý SQL Server và phục vụ nhiều client.
 
 ## Chức năng
 
-- Menu chọn mở Client hoặc Server.
-- Tự động dò tìm Server trong mạng LAN bằng giao thức UDP Broadcast (Cổng 9999).
-- Đăng ký tài khoản: kiểm tra dữ liệu ở client và server, kiểm tra trùng tên, băm mật khẩu bằng PBKDF2.
-- Đăng nhập: xác thực bằng hash + salt, trả thông tin người dùng, cấp token 30 phút.
-- Trang chính: hiển thị thông tin tài khoản, đồng hồ đếm ngược phiên và tự động gia hạn token khi còn dưới 5 phút; đăng xuất, đóng bằng nút X cũng gỡ phiên.
-- Server: `TcpListener` tại `IPAddress.Any:8888`, mỗi client một tác vụ.
+- Đăng ký, đăng nhập, đăng xuất, xem thông tin người dùng.
+- PBKDF2 + salt; token 30 phút, tự gia hạn khi còn dưới 5 phút.
+- Tạm khóa sau 5 lần sai trong 5 phút.
+- Dò tìm server bằng UDP broadcast (9999).
+- Dashboard server: danh sách client, log thời gian, Bắt đầu/Dừng.
 
-## Cài đặt và chạy
+## Chạy nhanh
 
-1. Cài .NET 10 SDK, Visual Studio 2022/2026 (workload .NET Desktop) và SQL Server/LocalDB.
-2. Mở `NT106.R14-BaiTap3.slnx`, chọn project `Client` làm startup rồi bấm F5.
-3. Ở menu chọn `Mở Server` trước, sau đó `Mở Client`. Hoặc chạy:
+1. Cài .NET 10 SDK + SQL Server/LocalDB; chạy `Server/database.sql`.
+2. Mở `NT106.R14-BaiTap3.slnx`, chọn `Client`, bấm F5.
+3. Menu: `Mở Server` → `Mở Client`; nhập `127.0.0.1:8888` hoặc bấm `Dò tìm Server`.
 
-   ```powershell
-   dotnet run --project .\Client
-   ```
-
-4. Tạo database bằng SSMS: mở `Server/database.sql` và bấm Execute. Nếu dùng instance khác, sửa `Server/appsettings.json` rồi build lại server.
-5. Trên form đăng nhập, nhập IP `127.0.0.1`, cổng `8888`, sau đó đăng ký hoặc đăng nhập. Hoặc bấm nút "Dò tìm Server" để tự động điền IP và Port nếu Server đang chạy trong cùng mạng LAN.
-
-## Cấu trúc
-
-| Tệp / thư mục | Vai trò |
-|---|---|
-| `NT106.R14-BaiTap3.slnx` | Solution gồm Client, Server, Shared, Server.Tests |
-| `Client/` | App WinForms: menu, đăng nhập, đăng ký, trang chính, kết nối TCP |
-| `Client/Forms/DangNhap/` | Form đăng nhập và file designer |
-| `Client/Forms/DangKy/` | Form đăng ký và file designer |
-| `Client/Forms/FormChinh/` | Trang chính và file designer |
-| `Client/Forms/MenuChinh/` | Menu chọn mở Client hoặc Server |
-| `Server/` | Server console, xử lý SQL, băm mật khẩu, phiên đăng nhập |
-| `Server/database.sql` | Script tạo database và bảng `NguoiDung` cho SSMS |
-| `Server/appsettings.json` | Chuỗi kết nối SQL Server |
-| `Server.Tests/` | Unit test cho tạm khóa đăng nhập và quản lý phiên |
-| `Shared/` | Giao thức, record dùng chung, kiểm tra dữ liệu nhập |
+```powershell
+dotnet run --project .\Server
+dotnet run --project .\Client
+```
 
 ## Giao thức
 
-- TCP cổng `8888`, UTF-8, mỗi yêu cầu/phản hồi là một dòng JSON kết thúc bằng `\n`.
-- Token: chuỗi hex 32 byte, hết hạn sau 30 phút. Gia hạn sẽ tạo token mới và cộng thêm 30 phút vào thời hạn hiện tại; token cũ không còn hiệu lực.
-- UDP Discovery: Cổng `9999`, Client gửi `DISCOVER_SERVER`, Server trả lời Port TCP (`8888`).
+- TCP `8888`, UDP discovery `9999`, UTF-8; mỗi thông điệp là một dòng JSON kết thúc `\n`.
+- Token hex 32 byte, hạn 30 phút; gia hạn tạo token mới và cộng 30 phút.
 
 | Lệnh | Tham số gửi lên | Phản hồi thành công |
 |---|---|---|
 | `DANGKY` | `TenDangNhap`, `MatKhau`, `HoTen`, `Email`, `Birthday` | `OK`, `ThongBao` |
 | `DANGNHAP` | `TenDangNhap`, `MatKhau` | `OK`, `DuLieuNguoiDung`, `Token`, `HetHanToken` |
 | `LAYTHONGTIN` | `Token` | `OK`, `DuLieuNguoiDung` |
-| `GIAHANTOKEN` | `Token` | `OK`, `Token` (mới), `HetHanToken` (mới) |
+| `GIAHANTOKEN` | `Token` | `OK`, `Token` mới, `HetHanToken` mới |
 | `DANGXUAT` | `Token` | `OK`; server gỡ phiên và đóng kết nối |
-
-`DuLieuNguoiDung` gồm `UserId`, `Username`, `FullName`, `Email`, `Birthday`.
-
-Ví dụ gia hạn phiên:
-
-```text
-Gửi:  {"MaLenh":"GIAHANTOKEN","Token":"<token hiện tại>"}
-Nhận: {"ThanhCong":true,"MaLoi":"OK","ThongBao":"Gia hạn phiên thành công.","DuLieuNguoiDung":null,"Token":"<token mới>","HetHanToken":"<thời điểm hết hạn mới>"}
-```
 
 | Mã lỗi | Ý nghĩa |
 |---|---|
@@ -72,7 +42,7 @@ Nhận: {"ThanhCong":true,"MaLoi":"OK","ThongBao":"Gia hạn phiên thành công
 | `ERR_DU_LIEU` | Dữ liệu không hợp lệ hoặc lệnh không tồn tại |
 | `ERR_TOKEN` | Token sai, thiếu hoặc đã hết hạn |
 | `ERR_HE_THONG` | Lỗi server; chi tiết chỉ ghi ở log |
-| `ERR_TAM_KHOA` | Đăng nhập sai 5 lần trong 5 phút; tạm khóa 5 phút, thông báo kèm thời gian chờ |
+| `ERR_TAM_KHOA` | Sai 5 lần trong 5 phút; tạm khóa 5 phút |
 
 ## Kiểm thử
 
@@ -83,9 +53,4 @@ dotnet format NT106.R14-BaiTap3.slnx --verify-no-changes
 
 ## Ghi chú
 
-- Mật khẩu dùng PBKDF2-HMAC-SHA256, 600.000 vòng lặp, salt riêng 16 byte.
-- Bảng `dbo.NguoiDung`: `UserId` khóa chính, `Username` UNIQUE, `PasswordHash`, `PasswordSalt`, `Email`, `FullName`, `Birthday`.
-- Chỉ server kết nối SQL Server; client không tham chiếu `Microsoft.Data.SqlClient`.
-- Tạm khóa đăng nhập: tính theo tên đăng nhập + IP, sai 5 lần trong cửa sổ 5 phút thì khóa 5 phút. Đăng nhập đúng hoặc hết thời gian khóa thì đếm lại từ đầu.
-- UDP Discovery: Server lắng nghe trên cổng 9999, Client gửi broadcast.
-- Gia hạn phiên: khi còn dưới 5 phút, Client gửi `GIAHANTOKEN`; Server kiểm tra token, tạo token mới và cộng thêm 30 phút. Nếu nhận `ERR_TOKEN`, Client thông báo và quay về form đăng nhập.
+- PBKDF2-HMAC-SHA256, 600.000 vòng, salt 16 byte; chỉ server kết nối SQL Server, mọi SQL dùng tham số.
