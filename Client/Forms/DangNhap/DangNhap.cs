@@ -190,14 +190,31 @@ public partial class DangNhap : Form
                 lblLoi.Text = "Không tìm thấy server trong mạng.";
             }
         }
-        catch (Exception)
+        catch (SocketException)
         {
-            lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
-            lblLoi.Text = "Không thể dò tìm server. Vui lòng kiểm tra kết nối mạng.";
+            HienThiLoiDoTim();
+        }
+        catch (IOException)
+        {
+            HienThiLoiDoTim();
+        }
+        catch (ObjectDisposedException)
+        {
+            HienThiLoiDoTim();
+        }
+        catch (InvalidOperationException)
+        {
+            HienThiLoiDoTim();
         }
         finally
         {
             btnDoTim.Enabled = true;
         }
+    }
+
+    private void HienThiLoiDoTim()
+    {
+        lblTrangThaiKetNoi.Text = "Trạng thái: Chưa kết nối";
+        lblLoi.Text = "Không thể dò tìm server. Vui lòng kiểm tra kết nối mạng.";
     }
 }

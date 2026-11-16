@@ -138,12 +138,19 @@ public sealed class MenuChinh : Form
                 WorkingDirectory = Path.GetDirectoryName(duongDan)!,
                 UseShellExecute = true,
             });
-            lblTrangThai.Text = "Đã mở Server trong cửa sổ console.";
+            lblTrangThai.Text = "Đã mở cửa sổ Server.";
         }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException or System.ComponentModel.Win32Exception)
+        catch (IOException)
         {
-            MessageBox.Show(this, "Không mở được Server: " + ex.Message,
-                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            HienThiLoiMoServer();
+        }
+        catch (InvalidOperationException)
+        {
+            HienThiLoiMoServer();
+        }
+        catch (System.ComponentModel.Win32Exception)
+        {
+            HienThiLoiMoServer();
         }
         finally
         {
@@ -163,10 +170,36 @@ public sealed class MenuChinh : Form
                 .WaitAsync(TimeSpan.FromMilliseconds(500));
             return true;
         }
-        catch
+        catch (SocketException)
         {
             return false;
         }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+        catch (TimeoutException)
+        {
+            return false;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (ObjectDisposedException)
+        {
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private void HienThiLoiMoServer()
+    {
+        MessageBox.Show(this, "Không mở được Server. Hãy build solution rồi thử lại.",
+            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
     private static string? TimServer()

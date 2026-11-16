@@ -94,4 +94,36 @@ public class QuanLyPhienTests
         Assert.Equal(phien, quanLy.XoaPhien("conn"));
         Assert.Null(quanLy.XoaPhien("conn"));
     }
+
+    [Fact]
+    public void LayDanhSach_TraVeCaChuaDangNhapVaDaDangNhap()
+    {
+        var dongHo = new DongHoGia();
+        var quanLy = TaoQuanLy(dongHo, "token-1");
+        quanLy.ThemKetNoi("conn-1");
+        quanLy.DatPhien("conn-2", quanLy.TaoPhien("an"));
+
+        var danhSach = quanLy.LayDanhSach();
+
+        Assert.Equal(2, danhSach.Count);
+        Assert.Contains(danhSach, client =>
+            client.MaPhien == "conn-1" && !client.DaDangNhap && client.HetHan is null);
+        Assert.Contains(danhSach, client =>
+            client.MaPhien == "conn-2" && client.DaDangNhap &&
+            client.TenDangNhap == "an" && client.HetHan is not null);
+    }
+
+    [Fact]
+    public void XoaTatCa_LamRongDanhSach()
+    {
+        var dongHo = new DongHoGia();
+        var quanLy = TaoQuanLy(dongHo, "token-1");
+        quanLy.ThemKetNoi("conn-1");
+        quanLy.DatPhien("conn-2", quanLy.TaoPhien("an"));
+
+        quanLy.XoaTatCa();
+
+        Assert.Empty(quanLy.LayDanhSach());
+        Assert.Equal(0, quanLy.SoPhien);
+    }
 }

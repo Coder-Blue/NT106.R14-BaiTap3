@@ -73,6 +73,18 @@ public sealed class QuanLyPhien
     public PhienDangNhap? XoaPhien(string maPhien) =>
         _danhSach.TryRemove(maPhien, out PhienDangNhap? phien) ? phien : null;
 
+    public IReadOnlyList<ClientDangKetNoi> LayDanhSach() =>
+        _danhSach
+            .Select(cap => new ClientDangKetNoi(
+                cap.Key,
+                cap.Value.TenDangNhap,
+                cap.Value.Token.Length > 0,
+                cap.Value.Token.Length > 0 ? cap.Value.HetHan : null))
+            .OrderBy(client => client.MaPhien)
+            .ToList();
+
+    public void XoaTatCa() => _danhSach.Clear();
+
     private string TaoTokenMoi(string? tokenCu = null)
     {
         for (int lan = 0; lan < 10; lan++)
@@ -87,3 +99,9 @@ public sealed class QuanLyPhien
         throw new InvalidOperationException("Không tạo được token mới.");
     }
 }
+
+public sealed record ClientDangKetNoi(
+    string MaPhien,
+    string TenDangNhap,
+    bool DaDangNhap,
+    DateTime? HetHan);
