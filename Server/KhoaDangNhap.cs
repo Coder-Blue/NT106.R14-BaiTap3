@@ -27,7 +27,7 @@ public sealed class KhoaDangNhap
     private static string TaoKhoa(string tenDangNhap, string ip) =>
         $"{tenDangNhap.Trim().ToLowerInvariant()}|{ip}";
 
-    /// <summary>Thời gian còn bị khóa, hoặc null nếu không bị khóa.</summary>
+    // Đang bị khóa thì trả về thời gian còn lại, không thì null.
     public TimeSpan? ThoiGianConKhoa(string tenDangNhap, string ip)
     {
         if (!_danhSach.TryGetValue(TaoKhoa(tenDangNhap, ip), out TrangThai? tt))
@@ -42,7 +42,7 @@ public sealed class KhoaDangNhap
         }
     }
 
-    /// <summary>Ghi nhận một lần sai. KhoaTrong khác null nghĩa là vừa bị khóa.</summary>
+    // Ghi nhận một lần sai. Nếu vừa đủ 5 lần thì trả thêm thời gian khóa.
     public (int SoLanSai, TimeSpan? KhoaTrong) GhiNhanSai(string tenDangNhap, string ip)
     {
         if (_danhSach.Count > NguongDonDep)

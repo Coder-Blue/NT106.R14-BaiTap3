@@ -275,7 +275,7 @@ public sealed class MayChu
         {
             GhiLog($"[!] Lỗi xử lý client {maPhien}.");
         }
-        // Lưới an toàn cuối cùng cho tác vụ nền; không hiển thị chi tiết lỗi cho người dùng.
+        // Bắt nốt lỗi lạ để một client lỗi không làm chết cả server.
         catch (Exception)
         {
             GhiLog($"[!] Lỗi không mong đợi tại {maPhien}.");
@@ -462,7 +462,7 @@ public sealed class MayChu
                 GhiLog("[UDP] Không mở được cổng dò tìm.");
             }
         }
-        // Lưới an toàn cuối cùng cho tác vụ nền; không hiển thị chi tiết lỗi cho người dùng.
+        // UDP có lỗi thì bỏ qua, không để ảnh hưởng luồng TCP.
         catch (Exception)
         {
             GhiLog("[UDP] Lỗi không mong đợi.");
