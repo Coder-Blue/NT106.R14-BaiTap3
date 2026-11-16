@@ -140,7 +140,7 @@ public sealed class FormServer : Form
         {
             await _mayChu.BatDauAsync();
         }
-        // Không để lộ chi tiết ngoại lệ ra giao diện.
+        // Có lỗi khi mở server thì thôi, giữ form ở trạng thái đã dừng.
         catch (Exception)
         {
         }
@@ -161,7 +161,7 @@ public sealed class FormServer : Form
         {
             await _mayChu.DungAsync();
         }
-        // Không để lộ chi tiết ngoại lệ ra giao diện.
+        // Lỗi lúc dừng cũng bỏ qua, miễn form không bị treo.
         catch (Exception)
         {
         }
